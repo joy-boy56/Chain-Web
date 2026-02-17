@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Chain Reaction</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050508;
+            --surface: #0d0d14;
+            --border: #1a1a2e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: #fff;
+            font-family: 'Rajdhani', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at 20% 50%, #0a0a1f, transparent 60%), radial-gradient(ellipse at 80% 50%, #0f0a1a, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        #app {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 480px;
+            padding: 12px;
+        }
+
+        h1 {
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            font-size: clamp(1.2rem, 5vw, 1.8rem);
+            text-align: center;
+            letter-spacing: .15em;
+            background: linear-gradient(90deg, #ff006e, #8338ec, #3a86ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: .75rem;
+            letter-spacing: .2em;
+            color: #444;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+
+        #setup {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .field label {
+            display: block;
+            font-size: .7rem;
+            letter-spacing: .2em;
+            color: #555;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .player-count-btns {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .pc-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            border: 1px solid #222;
+            background: #111;
+            color: #666;
+            font-family: 'Orbitron', monospace;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .pc-btn.active {
+            border-color: currentColor;
+            color: #fff;
+            box-shadow: 0 0 14px currentColor;
+            background: #181818;
+        }
+
+        .player-names {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .player-name-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .color-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .player-name-row input {
+            flex: 1;
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: .95rem;
+            padding: 8px 12px;
+            outline: none;
+        }
+
+        .grid-size-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .gs-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #222;
+            background: #111;
+            color: #555;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: .85rem;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .gs-btn.active {
+            border-color: #8338ec;
+            color: #fff;
+            box-shadow: 0 0 12px #8338ec88;
+            background: #181820;
+        }
+
+        #start-btn {
+            padding: 14px;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(135deg, #ff006e, #8338ec);
+            color: #fff;
+            font-family: 'Orbitron', monospace;
+            font-size: .9rem;
+            font-weight: 700;
+            letter-spacing: .1em;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        #start-btn:active {
+            transform: scale(.98);
+        }
+
+        #game {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .turn-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 8px 14px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .turn-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .turn-name {
+            font-family: 'Orbitron', monospace;
+            font-size: .75rem;
+            font-weight: 700;
+            letter-spacing: .05em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .turn-label {
+            font-size: .6rem;
+            color: #444;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        #back-btn {
+            padding: 8px 14px;
+            border-radius: 10px;
+            border: 1px solid #222;
+            background: #111;
+            color: #555;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: .8rem;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        #back-btn:hover {
+            color: #fff;
+            border-color: #444;
+        }
+
+        .players-bar {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .player-chip {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 4px 10px;
+            font-size: .7rem;
+            letter-spacing: .05em;
+            transition: all .3s;
+        }
+
+        .player-chip.active {
+            border-color: currentColor;
+            box-shadow: 0 0 10px currentColor;
+        }
+
+        .player-chip.eliminated {
+            opacity: .25;
+            text-decoration: line-through;
+        }
+
+        .chip-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        #grid-wrap {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 8px;
+            touch-action: none;
+            position: relative;
+        }
+
+        #grid {
+            display: grid;
+            gap: 3px;
+            width: 100%;
+        }
+
+        .cell {
+            aspect-ratio: 1;
+            background: #0a0a10;
+            border-radius: 6px;
+            border: 1px solid #111;
+            cursor: pointer;
+            position: relative;
+            transition: border-color .15s, background .15s;
+        }
+
+        .cell:active {
+            transform: scale(.93);
+        }
+
+        #anim-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            border-radius: 14px;
+            z-index: 10;
+        }
+
+        #win-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 5, 8, .92);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        #win-overlay.show {
+            display: flex;
+        }
+
+        .win-title {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(1.5rem, 8vw, 3rem);
+            font-weight: 900;
+            animation: glowPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+
+            0%,
+            100% {
+                text-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
+            }
+
+            50% {
+                text-shadow: 0 0 40px currentColor, 0 0 80px currentColor;
+            }
+        }
+
+        .win-name {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(1rem, 5vw, 1.5rem);
+            color: #fff;
+            opacity: .7;
+            letter-spacing: .2em;
+        }
+
+        .win-btns {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .win-btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            background: #111;
+            color: #fff;
+            font-family: 'Orbitron', monospace;
+            font-size: .75rem;
+            cursor: pointer;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        .win-btn.primary {
+            background: linear-gradient(135deg, #ff006e, #8338ec);
+            border-color: transparent;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <h1>Chain Web</h1>
+        <p class="subtitle">Strategic Domination</p>
+
+        <div id="setup">
+            <div class="field">
+                <label>Number of Players</label>
+                <div class="player-count-btns" id="pc-btns"></div>
+            </div>
+            <div class="field">
+                <label>Player Names</label>
+                <div class="player-names" id="player-names"></div>
+            </div>
+            <div class="field">
+                <label>Grid Size</label>
+                <div class="grid-size-row" id="gs-btns"></div>
+            </div>
+            <button id="start-btn">Start Game</button>
+        </div>
+
+        <div id="game">
+            <div class="top-bar">
+                <div class="turn-indicator">
+                    <div class="turn-dot" id="turn-dot"></div>
+                    <div>
+                        <div class="turn-label">Turn</div>
+                        <div class="turn-name" id="turn-name"></div>
+                    </div>
+                </div>
+                <button id="back-btn">← Menu</button>
+            </div>
+            <div class="players-bar" id="players-bar"></div>
+            <div id="grid-wrap">
+                <div id="grid"></div>
+                <canvas id="anim-canvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div id="win-overlay">
+        <div class="win-title" id="win-title">Victory!</div>
+        <div class="win-name" id="win-subtitle"></div>
+        <div class="win-btns">
+            <button class="win-btn primary" id="play-again-btn">Play Again</button>
+            <button class="win-btn" id="menu-btn">Main Menu</button>
+        </div>
+    </div>
+
+    <script>
+        // ── CONSTANTS ──────────────────────────────────────────────────────────────
+        const PLAYER_COLORS = ['#ff006e', '#3a86ff', '#06d6a0', '#ffbe0b', '#8338ec', '#fb5607', '#00f5ff', '#ff70a6'];
+        const GRID_SIZES = [{ label: '6 × 5', rows: 5, cols: 6 }, { label: '9 × 6', rows: 6, cols: 9 }, { label: '11 × 8', rows: 8, cols: 11 }];
+
+        // ── GAME STATE ─────────────────────────────────────────────────────────────
+        let numPlayers = 2, gridChoice = 1;
+        let players = [], board = [], rows = 0, cols = 0;
+        let currentPlayer = 0, moveCount = 0, animating = false, gameStarted = false;
+
+        // ── CANVAS ENGINE ──────────────────────────────────────────────────────────
+        const canvas = document.getElementById('anim-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let cellFx = {}; // keyed by "r_c" for persistent per-cell FX
+        let transientFx = []; // one-shot effects (shockwaves, absorbs)
+        let rafId = null, lastTime = 0;
+
+        function hexToRgb(hex) {
+            return { r: parseInt(hex.slice(1, 3), 16), g: parseInt(hex.slice(3, 5), 16), b: parseInt(hex.slice(5, 7), 16) };
+        }
+
+        function startAnimLoop() {
+            if (rafId) return;
+            lastTime = performance.now();
+            function frame(now) {
+                const dt = Math.min((now - lastTime) / 1000, 0.05);
+                lastTime = now;
+                drawFrame(dt);
+                rafId = requestAnimationFrame(frame);
+            }
+            rafId = requestAnimationFrame(frame);
+        }
+        function stopAnimLoop() { if (rafId) { cancelAnimationFrame(rafId); rafId = null; } }
+
+        function resizeCanvas() {
+            const wrap = document.getElementById('grid-wrap');
+            canvas.width = wrap.offsetWidth;
+            canvas.height = wrap.offsetHeight;
+        }
+
+        function cellGeom(r, c) {
+            const gridEl = document.getElementById('grid');
+            const wrapRect = document.getElementById('grid-wrap').getBoundingClientRect();
+            const cells = gridEl.querySelectorAll('.cell');
+            const idx = r * cols + c;
+            if (idx >= cells.length) return { x: 0, y: 0, w: 32, h: 32 };
+            const cr = cells[idx].getBoundingClientRect();
+            return { x: cr.left - wrapRect.left + cr.width / 2, y: cr.top - wrapRect.top + cr.height / 2, w: cr.width, h: cr.height };
+        }
+
+        function drawFrame(dt) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 1. Per-cell persistent tension + orb rendering
+            const now = performance.now() / 1000;
+            for (const key in cellFx) {
+                const fx = cellFx[key];
+                if (!fx || fx.orbs <= 0) continue;
+                fx.t += dt;
+                const [r, c] = key.split('_').map(Number);
+                const g = cellGeom(r, c);
+                const rgb = hexToRgb(fx.color);
+                const maxO = fx.max;
+                const ratio = (fx.orbs - 1) / maxO; // 0=1orb, 1=full
+                const isCritical = fx.orbs >= maxO; // about to explode
+
+                // Ambient glow under orbs — gets brighter as tension rises
+                if (ratio > 0) {
+                    const glowR = g.w * (0.6 + ratio * 0.5);
+                    const baseAlpha = 0.05 + ratio * 0.15;
+                    const pulse = isCritical ? Math.abs(Math.sin(fx.t * 18)) * 0.2 : 0;
+                    const grad = ctx.createRadialGradient(g.x, g.y, 0, g.x, g.y, glowR);
+                    grad.addColorStop(0, `rgba(${rgb.r},${rgb.g},${rgb.b},${baseAlpha + pulse})`);
+                    grad.addColorStop(1, `rgba(${rgb.r},${rgb.g},${rgb.b},0)`);
+                    ctx.fillStyle = grad;
+                    ctx.beginPath(); ctx.arc(g.x, g.y, glowR, 0, Math.PI * 2); ctx.fill();
+                }
+
+                // Shake amount ramps up as cell fills
+                const shakeFreq = isCritical ? 35 : 8 + ratio * 18;
+                const shakeMag = isCritical ? g.w * 0.12 * Math.abs(Math.sin(fx.t * shakeFreq)) : g.w * 0.04 * ratio * Math.sin(fx.t * shakeFreq);
+
+                // Draw orbs
+                drawOrbsCanvas(g, fx.orbs, fx.color, shakeMag, ratio, fx.t, isCritical);
+
+                // Critical ring pulses
+                if (isCritical) {
+                    const ringPulse = Math.sin(fx.t * 14) * 0.5 + 0.5;
+                    ctx.strokeStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},${0.6 + ringPulse * 0.4})`;
+                    ctx.lineWidth = 1.5 + ringPulse;
+                    const ringR = g.w * 0.5 * (0.85 + ringPulse * 0.12);
+                    ctx.beginPath(); ctx.arc(g.x, g.y, ringR, 0, Math.PI * 2); ctx.stroke();
+                    // inner sparks
+                    if (Math.random() < 0.4) {
+                        spawnSpark(g.x, g.y, g.w * 0.3, fx.color);
+                    }
+                }
+            }
+
+            // 2. Transient one-shot effects (shockwaves, absorbs, pre-explode)
+            transientFx = transientFx.filter(fx => {
+                fx.t += dt;
+                const p = Math.min(fx.t / fx.dur, 1);
+                const [r, c] = fx.cell;
+                const g = cellGeom(r, c);
+                const rgb = hexToRgb(fx.color);
+
+                if (fx.type === 'shockwave') {
+                    const eased = 1 - Math.pow(1 - p, 3);
+                    const r1 = g.w * 3.2 * eased;
+                    const alpha = (1 - eased) * 0.9;
+                    ctx.strokeStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},${alpha})`;
+                    ctx.lineWidth = 3 * (1 - eased) + 0.5;
+                    ctx.beginPath(); ctx.arc(g.x, g.y, r1, 0, Math.PI * 2); ctx.stroke();
+                    if (p > 0.15) {
+                        const r2 = g.w * 3.2 * (eased - 0.15) * 1.2;
+                        ctx.strokeStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},${alpha * 0.35})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath(); ctx.arc(g.x, g.y, r2, 0, Math.PI * 2); ctx.stroke();
+                    }
+                }
+                else if (fx.type === 'absorb') {
+                    const eased = Math.sin(p * Math.PI);
+                    const glowR = g.w * 0.85 * eased;
+                    const alpha = eased * 0.95;
+                    const grad = ctx.createRadialGradient(g.x, g.y, 0, g.x, g.y, glowR);
+                    grad.addColorStop(0, `rgba(255,255,255,${alpha * 0.8})`);
+                    grad.addColorStop(0.3, `rgba(${rgb.r},${rgb.g},${rgb.b},${alpha})`);
+                    grad.addColorStop(1, `rgba(${rgb.r},${rgb.g},${rgb.b},0)`);
+                    ctx.fillStyle = grad;
+                    ctx.beginPath(); ctx.arc(g.x, g.y, glowR, 0, Math.PI * 2); ctx.fill();
+                }
+                else if (fx.type === 'preexplode') {
+                    // Rapid strobe charging effect
+                    const strobe = Math.abs(Math.sin(fx.t * 55));
+                    const glowR = g.w * (0.55 + p * 0.85);
+                    const alpha = (0.5 + strobe * 0.5) * (1 - p * 0.2);
+                    const grad = ctx.createRadialGradient(g.x, g.y, 0, g.x, g.y, glowR);
+                    grad.addColorStop(0, `rgba(255,255,255,${alpha})`);
+                    grad.addColorStop(0.2, `rgba(${rgb.r},${rgb.g},${rgb.b},${alpha * 0.9})`);
+                    grad.addColorStop(1, `rgba(${rgb.r},${rgb.g},${rgb.b},0)`);
+                    ctx.fillStyle = grad;
+                    ctx.beginPath(); ctx.arc(g.x, g.y, glowR, 0, Math.PI * 2); ctx.fill();
+                    // white flash border
+                    ctx.strokeStyle = `rgba(255,255,255,${strobe * 0.8})`;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath(); ctx.arc(g.x, g.y, g.w * 0.45, 0, Math.PI * 2); ctx.stroke();
+                }
+
+                return p < 1;
+            });
+
+            // 3. Particles
+            particles = particles.filter(p => {
+                p.t += dt;
+                if (p.t >= p.life) return false;
+                const prog = p.t / p.life;
+                const ease = 1 - prog;
+                p.x += p.vx * dt; p.y += p.vy * dt;
+                p.vx *= (1 - 3 * dt); p.vy *= (1 - 3 * dt); // drag
+                const alpha = ease * p.alpha;
+                const size = p.size * ease;
+                const rgb = hexToRgb(p.color);
+                // glow halo
+                const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, size * 3);
+                grad.addColorStop(0, `rgba(${rgb.r},${rgb.g},${rgb.b},${alpha * 0.8})`);
+                grad.addColorStop(1, `rgba(${rgb.r},${rgb.g},${rgb.b},0)`);
+                ctx.fillStyle = grad;
+                ctx.beginPath(); ctx.arc(p.x, p.y, size * 3, 0, Math.PI * 2); ctx.fill();
+                // bright core
+                ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+                ctx.beginPath(); ctx.arc(p.x, p.y, size * 0.6, 0, Math.PI * 2); ctx.fill();
+                return true;
+            });
+        }
+
+        function drawOrbsCanvas(g, count, color, shake, tension, t, critical) {
+            if (count <= 0) return;
+            const rgb = hexToRgb(color);
+            const orbR = Math.max(g.w * 0.135, 5);
+            const positions = [
+                [[0, 0]],
+                [[-1, 0], [1, 0]],
+                [[0, -1], [-0.9, 0.7], [0.9, 0.7]],
+                [[-0.9, -0.9], [0.9, -0.9], [-0.9, 0.9], [0.9, 0.9]]
+            ];
+            const layout = positions[Math.min(count, 4) - 1];
+            layout.forEach((off, i) => {
+                // Each orb gets its own phase for organic movement
+                const phase = t * (critical ? 12 : 2 + tension * 6) + i * 1.3;
+                const breathe = Math.sin(phase) * orbR * (critical ? 0.25 : 0.08 + tension * 0.1);
+                // Directional shake — orbs push toward neighbors they'll fly to
+                const sx = shake * (Math.sin(t * 30 + i * 2.3 + 0.7));
+                const sy = shake * (Math.cos(t * 30 + i * 1.9 + 1.1));
+
+                const ox = g.x + off[0] * orbR * 1.25 + sx;
+                const oy = g.y + off[1] * orbR * 1.25 + sy;
+                const r = orbR + breathe;
+
+                // Outer energy corona (gets more dramatic near critical)
+                const coronaSize = r * (1.8 + tension * 1.5 + (critical ? Math.abs(Math.sin(t * 15 + i)) * 1.2 : 0));
+                const coronaAlpha = 0.25 + tension * 0.45 + (critical ? Math.abs(Math.sin(t * 14 + i)) * 0.35 : 0);
+                const corona = ctx.createRadialGradient(ox, oy, r * 0.3, ox, oy, coronaSize);
+                corona.addColorStop(0, `rgba(${rgb.r},${rgb.g},${rgb.b},${coronaAlpha})`);
+                corona.addColorStop(1, `rgba(${rgb.r},${rgb.g},${rgb.b},0)`);
+                ctx.fillStyle = corona;
+                ctx.beginPath(); ctx.arc(ox, oy, coronaSize, 0, Math.PI * 2); ctx.fill();
+
+                // Orb body — glossy sphere illusion
+                const bodyGrad = ctx.createRadialGradient(ox - r * 0.35, oy - r * 0.35, r * 0.03, ox, oy, r);
+                bodyGrad.addColorStop(0, 'rgba(255,255,255,0.95)');
+                bodyGrad.addColorStop(0.25, `rgba(${rgb.r},${rgb.g},${rgb.b},0.95)`);
+                bodyGrad.addColorStop(0.7, `rgba(${Math.floor(rgb.r * 0.5)},${Math.floor(rgb.g * 0.5)},${Math.floor(rgb.b * 0.5)},0.9)`);
+                bodyGrad.addColorStop(1, `rgba(${Math.floor(rgb.r * 0.2)},${Math.floor(rgb.g * 0.2)},${Math.floor(rgb.b * 0.2)},0.85)`);
+                ctx.fillStyle = bodyGrad;
+                ctx.beginPath(); ctx.arc(ox, oy, r, 0, Math.PI * 2); ctx.fill();
+
+                // Specular highlight
+                ctx.fillStyle = 'rgba(255,255,255,0.55)';
+                ctx.beginPath(); ctx.arc(ox - r * 0.3, oy - r * 0.3, r * 0.22, 0, Math.PI * 2); ctx.fill();
+            });
+        }
+
+        function spawnSpark(x, y, maxR, color) {
+            const angle = Math.random() * Math.PI * 2;
+            const d = Math.random() * maxR;
+            particles.push({
+                x: x + Math.cos(angle) * d, y: y + Math.sin(angle) * d,
+                vx: (Math.random() - 0.5) * 40, vy: (Math.random() - 0.5) * 40,
+                size: 1.5 + Math.random() * 2, color, alpha: 0.9, life: 0.15 + Math.random() * 0.25, t: 0
+            });
+        }
+
+        function spawnExplosionParticles(r, c, color) {
+            const g = cellGeom(r, c);
+            // Omnidirectional burst
+            for (let i = 0; i < 22; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = g.w * (1.5 + Math.random() * 3);
+                particles.push({
+                    x: g.x + (Math.random() - 0.5) * g.w * 0.4, y: g.y + (Math.random() - 0.5) * g.h * 0.4,
+                    vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
+                    size: g.w * (0.07 + Math.random() * 0.1), color, alpha: 1, life: 0.35 + Math.random() * 0.45, t: 0
+                });
+            }
+            // Directed streams toward neighbors
+            [[r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1]].forEach(([nr, nc]) => {
+                if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) return;
+                const ng = cellGeom(nr, nc);
+                const angle = Math.atan2(ng.y - g.y, ng.x - g.x);
+                for (let i = 0; i < 10; i++) {
+                    const spread = (Math.random() - 0.5) * 0.5;
+                    const speed = g.w * (2.5 + Math.random() * 2.5);
+                    particles.push({
+                        x: g.x, y: g.y,
+                        vx: Math.cos(angle + spread) * speed, vy: Math.sin(angle + spread) * speed,
+                        size: g.w * (0.08 + Math.random() * 0.09), color, alpha: 1, life: 0.2 + Math.random() * 0.2, t: 0
+                    });
+                }
+            });
+        }
+
+        function setCellFx(r, c, orbs, max, color) {
+            const key = `${r}_${c}`;
+            if (orbs <= 0) { delete cellFx[key]; return; }
+            // Preserve timer so orbs keep animating continuously
+            cellFx[key] = { t: cellFx[key]?.t ?? Math.random() * 10, orbs, max, color };
+        }
+
+        function addTransient(type, r, c, color, dur) {
+            transientFx.push({ type, cell: [r, c], color, dur, t: 0 });
+        }
+
+        // ── SETUP UI ───────────────────────────────────────────────────────────────
+        const pcBtnsEl = document.getElementById('pc-btns');
+        const playerNamesEl = document.getElementById('player-names');
+        const gsBtnsEl = document.getElementById('gs-btns');
+
+        for (let i = 2; i <= 8; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'pc-btn' + (i === numPlayers ? ' active' : '');
+            btn.textContent = i; btn.style.color = PLAYER_COLORS[i - 1];
+            btn.addEventListener('click', () => {
+                numPlayers = i;
+                document.querySelectorAll('.pc-btn').forEach((b, idx) => b.classList.toggle('active', idx + 2 === numPlayers));
+                renderNameFields();
+            });
+            pcBtnsEl.appendChild(btn);
+        }
+
+        GRID_SIZES.forEach((gs, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'gs-btn' + (i === gridChoice ? ' active' : '');
+            btn.textContent = gs.label;
+            btn.addEventListener('click', () => { gridChoice = i; document.querySelectorAll('.gs-btn').forEach((b, j) => b.classList.toggle('active', j === i)); });
+            gsBtnsEl.appendChild(btn);
+        });
+
+        function renderNameFields() {
+            playerNamesEl.innerHTML = '';
+            for (let i = 0; i < numPlayers; i++) {
+                const row = document.createElement('div'); row.className = 'player-name-row';
+                const dot = document.createElement('div'); dot.className = 'color-dot';
+                dot.style.background = PLAYER_COLORS[i]; dot.style.boxShadow = `0 0 8px ${PLAYER_COLORS[i]}`;
+                const input = document.createElement('input'); input.type = 'text';
+                input.placeholder = `Player ${i + 1}`; input.value = `Player ${i + 1}`; input.id = `pname-${i}`;
+                row.appendChild(dot); row.appendChild(input); playerNamesEl.appendChild(row);
+            }
+        }
+        renderNameFields();
+
+        document.getElementById('start-btn').addEventListener('click', startGame);
+        document.getElementById('back-btn').addEventListener('click', goToMenu);
+        document.getElementById('play-again-btn').addEventListener('click', () => { document.getElementById('win-overlay').classList.remove('show'); startGame(); });
+        document.getElementById('menu-btn').addEventListener('click', () => { document.getElementById('win-overlay').classList.remove('show'); goToMenu(); });
+
+        function goToMenu() {
+            document.getElementById('game').style.display = 'none';
+            document.getElementById('setup').style.display = 'flex';
+            gameStarted = false; stopAnimLoop(); particles = []; cellFx = {}; transientFx = [];
+        }
+
+        function startGame() {
+            players = [];
+            for (let i = 0; i < numPlayers; i++) {
+                const inp = document.getElementById(`pname-${i}`);
+                players.push({ name: inp ? inp.value.trim() || `Player ${i + 1}` : `Player ${i + 1}`, color: PLAYER_COLORS[i], eliminated: false });
+            }
+            const gs = GRID_SIZES[gridChoice];
+            rows = gs.rows; cols = gs.cols; currentPlayer = 0; moveCount = 0; animating = false; gameStarted = true;
+            board = [];
+            for (let r = 0; r < rows; r++) { board.push([]); for (let c = 0; c < cols; c++)board[r].push({ player: -1, orbs: 0 }); }
+            particles = []; cellFx = {}; transientFx = [];
+            document.getElementById('setup').style.display = 'none';
+            document.getElementById('game').style.display = 'flex';
+            renderPlayersBar(); renderGrid(); renderTurnIndicator();
+            requestAnimationFrame(() => requestAnimationFrame(() => { resizeCanvas(); startAnimLoop(); }));
+        }
+
+        window.addEventListener('resize', () => { if (gameStarted) resizeCanvas(); });
+
+        // ── GAME LOGIC ─────────────────────────────────────────────────────────────
+        function maxOrbs(r, c) {
+            const corner = (r === 0 || r === rows - 1) && (c === 0 || c === cols - 1);
+            const edge = r === 0 || r === rows - 1 || c === 0 || c === cols - 1;
+            if (corner) return 1; if (edge) return 2; return 3;
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('grid');
+            grid.style.gridTemplateColumns = `repeat(${cols},1fr)`;
+            grid.innerHTML = '';
+            for (let r = 0; r < rows; r++)for (let c = 0; c < cols; c++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell'; cell.dataset.r = r; cell.dataset.c = c;
+                cell.addEventListener('click', onCellClick);
+                grid.appendChild(cell);
+            }
+            updateGridDisplay();
+        }
+
+        function updateGridDisplay() {
+            for (let r = 0; r < rows; r++)for (let c = 0; c < cols; c++) {
+                const cell = document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
+                if (!cell) continue;
+                const d = board[r][c];
+                const m = maxOrbs(r, c);
+                if (d.orbs > 0) {
+                    const color = players[d.player].color;
+                    cell.style.borderColor = color + '33';
+                    cell.style.background = color + '0c';
+                    setCellFx(r, c, d.orbs, m, color);
+                } else {
+                    cell.style.borderColor = '#111';
+                    cell.style.background = '#0a0a10';
+                    setCellFx(r, c, 0, m, '#fff');
+                }
+            }
+        }
+
+        function renderTurnIndicator() {
+            const p = players[currentPlayer];
+            const dot = document.getElementById('turn-dot'); const name = document.getElementById('turn-name');
+            dot.style.background = p.color; dot.style.boxShadow = `0 0 8px ${p.color}`;
+            name.textContent = p.name; name.style.color = p.color;
+        }
+
+        function renderPlayersBar() {
+            const bar = document.getElementById('players-bar'); bar.innerHTML = '';
+            players.forEach((p, i) => {
+                const chip = document.createElement('div');
+                chip.className = 'player-chip' + (i === currentPlayer ? ' active' : '') + (p.eliminated ? ' eliminated' : '');
+                chip.style.color = p.color; chip.id = `chip-${i}`;
+                const dot = document.createElement('div'); dot.className = 'chip-dot'; dot.style.background = p.color;
+                chip.appendChild(dot); chip.appendChild(document.createTextNode(p.name)); bar.appendChild(chip);
+            });
+        }
+        function updatePlayersBar() {
+            players.forEach((p, i) => {
+                const chip = document.getElementById(`chip-${i}`); if (!chip) return;
+                chip.className = 'player-chip' + (i === currentPlayer ? ' active' : '') + (p.eliminated ? ' eliminated' : '');
+            });
+        }
+
+        function sleep(ms) { return new Promise(res => setTimeout(res, ms)); }
+
+        async function onCellClick(e) {
+            if (animating) return;
+            const r = parseInt(e.currentTarget.dataset.r);
+            const c = parseInt(e.currentTarget.dataset.c);
+            const d = board[r][c];
+            if (d.player !== -1 && d.player !== currentPlayer) return;
+            animating = true; moveCount++;
+            board[r][c].player = currentPlayer; board[r][c].orbs++;
+            addTransient('absorb', r, c, players[currentPlayer].color, 0.3);
+            updateGridDisplay();
+            await processExplosions();
+            if (moveCount >= numPlayers) { checkWin(); if (!gameStarted) return; }
+            do { currentPlayer = (currentPlayer + 1) % players.length; } while (players[currentPlayer].eliminated);
+            renderTurnIndicator(); updatePlayersBar(); animating = false;
+        }
+
+        async function processExplosions() {
+            let hadExplosion = true;
+            while (hadExplosion) {
+                hadExplosion = false;
+                const toExplode = [];
+                for (let r = 0; r < rows; r++)for (let c = 0; c < cols; c++)if (board[r][c].orbs > maxOrbs(r, c)) toExplode.push([r, c]);
+                if (toExplode.length === 0) break;
+                hadExplosion = true;
+
+                // Pre-explosion charge-up animation
+                for (const [r, c] of toExplode) addTransient('preexplode', r, c, players[board[r][c].player].color, 0.22);
+                await sleep(220);
+
+                for (const [r, c] of toExplode) {
+                    const ep = board[r][c].player;
+                    const color = players[ep].color;
+                    spawnExplosionParticles(r, c, color);
+                    addTransient('shockwave', r, c, color, 0.55);
+                    delete cellFx[`${r}_${c}`];
+                    board[r][c].orbs -= (maxOrbs(r, c) + 1);
+                    if (board[r][c].orbs <= 0) { board[r][c].orbs = 0; board[r][c].player = -1; }
+                    [[r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1]].forEach(([nr, nc]) => {
+                        if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) return;
+                        board[nr][nc].player = ep; board[nr][nc].orbs++;
+                        addTransient('absorb', nr, nc, color, 0.3);
+                    });
+                }
+                updateGridDisplay();
+                await sleep(200);
+                updateEliminations();
+            }
+        }
+
+        function updateEliminations() {
+            if (moveCount < numPlayers) return;
+            players.forEach((p, i) => {
+                let has = false;
+                for (let r = 0; r < rows && !has; r++)for (let c = 0; c < cols && !has; c++)if (board[r][c].player === i && board[r][c].orbs > 0) has = true;
+                if (!has && !p.eliminated) p.eliminated = true;
+            });
+        }
+
+        function checkWin() {
+            updateEliminations();
+            const alive = players.filter(p => !p.eliminated);
+            if (alive.length === 1) showWin(alive[0]);
+        }
+
+        function showWin(player) {
+            gameStarted = false;
+            const cx = canvas.width / 2, cy = canvas.height / 2;
+            for (let i = 0; i < 80; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 60 + Math.random() * 220;
+                particles.push({
+                    x: cx, y: cy, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
+                    size: 3 + Math.random() * 9, color: player.color, alpha: 1, life: 0.6 + Math.random() * 1, t: 0
+                });
+            }
+            setTimeout(() => {
+                const overlay = document.getElementById('win-overlay');
+                document.getElementById('win-title').textContent = '🏆 Victory!';
+                document.getElementById('win-title').style.color = player.color;
+                document.getElementById('win-subtitle').textContent = player.name + ' wins!';
+                overlay.classList.add('show');
+            }, 700);
+        }
+    </script>
+</body>
+
+</html>
