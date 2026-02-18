@@ -1,8 +1,11 @@
 const WebSocket = require('ws');
 
-const PORT = 3001;
-const wss = new WebSocket.Server({ port: PORT });
-console.log(`WebSocket server running on ws://localhost:${PORT}`);
+const PORT = process.env.PORT || 3001;
+const wss = new WebSocket.Server({
+    port: PORT,
+    host: '0.0.0.0'
+});
+console.log(`WebSocket server running on port:${PORT}`);
 
 const rooms = new Map();
 
