@@ -902,8 +902,8 @@
         <div id="op-menu" class="card">
             <div>
                 <span class="field-label">Server URL</span>
-                <input type="text" id="serverUrl" class="text-input" value="wss://chain-web.onrender.com"
-                    placeholder="wss://chain-web.onrender.com">
+                <input type="text" id="serverUrl" class="text-input" value="ws://localhost:3001"
+                    placeholder="ws://localhost:3001">
             </div>
             <button class="mbtn primary" onclick="showPanel('op-host')">Create Room (Host)</button>
             <button class="mbtn" onclick="showPanel('op-join')">Join Room (Guest)</button>
@@ -1501,6 +1501,7 @@
                 if (currentPlayer !== myPlayerIndex) return;
                 const d = board[r][c];
                 if (d.player !== -1 && d.player !== currentPlayer) return;
+                animating = true;  // block further taps until applyState clears it
                 wsSend({ type: 'move', roomCode: myRoomCode, playerId: myPlayerId, x: c, y: r });
                 return;
             }
@@ -1737,35 +1738,92 @@
         //  Server sends grid[r][c] = {player, count}
         //  Client uses board[r][c] = {player, orbs}
         // ═══════════════════════════════════════════
-        function applyState(state) {
-            // 1. Copy server grid into our board
-            for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < cols; c++) {
-                    const sv = state.grid[r][c];
-                    board[r][c].player = sv.player;
-                    board[r][c].orbs = sv.count;  // field name differs!
+        // applyState is async — it animates each explosion wave before showing final grid
+        async function applyState(state) {
+            animating = true;
+
+            const waves = state.explosionWaves || [];
+
+            if (waves.length === 0) {
+                // No chain reaction — just absorb flash on the placed cell, then show result
+                // Find the cell that changed (it's the only one with orbs that wasn't there before)
+                // Simple: show absorb on every newly-orbed cell
+                for (let r = 0; r < rows; r++)
+                    for (let c = 0; c < cols; c++) {
+                        const sv = state.grid[r][c];
+                        if (sv.count > 0 && (board[r][c].orbs === 0 || board[r][c].player !== sv.player))
+                            addTransient('absorb', r, c, players[sv.player]?.color || '#fff', .3);
+                    }
+                copyServerGrid(state.grid);
+                syncCells();
+            } else {
+                // ── Animate each explosion wave sequentially ──────────────────────
+                // We replay explosions locally using the wave data from the server,
+                // mirroring exactly what the offline doExplosions() does visually.
+
+                for (let wi = 0; wi < waves.length; wi++) {
+                    const wave = waves[wi];
+
+                    // 1. Preexplode pulse on every cell in this wave
+                    wave.forEach(({ r, c, player }) => {
+                        const col = players[player]?.color || '#fff';
+                        addTransient('preexplode', r, c, col, .22);
+                    });
+                    await sleep(220);
+
+                    // 2. Particles + shockwave on each exploding cell,
+                    //    then manually apply this wave to the local board so orb counts
+                    //    are correct for the next syncCells call
+                    vibrate([12, 8, 12]);
+                    wave.forEach(({ r, c, player }) => {
+                        const col = players[player]?.color || '#fff';
+                        explodeParticles(r, c, col);
+                        addTransient('shockwave', r, c, col, .55);
+                        delete cellFx[`${r}_${c}`];
+
+                        // Apply this single explosion step to local board
+                        const mass = maxOrbs(r, c);
+                        board[r][c].orbs -= (mass + 1);
+                        if (board[r][c].orbs <= 0) { board[r][c].orbs = 0; board[r][c].player = -1; }
+                        [[r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1]].forEach(([nr, nc]) => {
+                            if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) return;
+                            board[nr][nc].player = player;
+                            board[nr][nc].orbs++;
+                            addTransient('absorb', nr, nc, col, .28);
+                        });
+                    });
+                    syncCells();
+                    await sleep(190);
                 }
+
+                // 3. After all waves, snap to authoritative server grid
+                //    (handles any floating-point / ordering differences)
+                copyServerGrid(state.grid);
+                syncCells();
             }
 
-            // 2. Update game meta
+            // Update game meta
             state.eliminated.forEach((elim, i) => { if (players[i]) players[i].eliminated = elim; });
             currentPlayer = state.turn;
             moveCount = state.moveCount !== undefined ? state.moveCount : moveCount + 1;
 
-            // 3. Trigger some visual feedback for the explosion that just happened
-            //    We don't know exactly which cells exploded, so add shockwaves for
-            //    cells that currently have orbs (they may have just received from explode)
-            //    — simple heuristic: just re-render; the canvas loop handles orb animation
-            syncCells();
             updateHUD();
             refreshChips();
             animating = false;
 
-            // 4. Win check
             if (state.gameOver) {
                 gameActive = false;
                 if (state.winner >= 0 && players[state.winner]) showWin(players[state.winner]);
             }
+        }
+
+        // Copy server grid format ({player,count}) into local board ({player,orbs})
+        function copyServerGrid(serverGrid) {
+            for (let r = 0; r < rows; r++)
+                for (let c = 0; c < cols; c++) {
+                    board[r][c].player = serverGrid[r][c].player;
+                    board[r][c].orbs = serverGrid[r][c].count;
+                }
         }
 
         // ═══════════════════════════════════════════

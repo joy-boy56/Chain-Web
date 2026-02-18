@@ -162,23 +162,23 @@ wss.on('connection', (ws) => {
         const gs = room.gameState;
         const playerIndex = room.players.indexOf(data.playerId);
         if (playerIndex === -1) return;
-        if (gs.turn !== playerIndex) return;          // not your turn
+        if (gs.turn !== playerIndex) return;
         if (gs.gameOver) return;
 
         const { rows, cols, grid } = gs;
-        const x = data.x, y = data.y;                // x=col, y=row
+        const x = data.x, y = data.y;   // x=col, y=row
         if (x < 0 || y < 0 || y >= rows || x >= cols) return;
 
         const cell = grid[y][x];
-        if (cell.player !== -1 && cell.player !== playerIndex) return;  // wrong owner
+        if (cell.player !== -1 && cell.player !== playerIndex) return;
 
         // Place orb
         cell.player = playerIndex;
         cell.count++;
         gs.moveCount++;
 
-        // Explode
-        processExplosions(gs);
+        // Explode — returns per-wave arrays for client animation
+        const explosionWaves = processExplosions(gs);
 
         // Check win
         checkElimination(gs);
@@ -197,45 +197,49 @@ wss.on('connection', (ws) => {
                 moveCount: gs.moveCount,
                 eliminated: gs.eliminated,
                 gameOver: gs.gameOver,
-                winner: gs.winner
+                winner: gs.winner,
+                explosionWaves   // array of waves; each wave = [{r,c,player}, ...]
             }
         });
     }
 
     // ─────────────────────────────────────────
+    // Returns array of waves for client-side animation.
+    // Each wave is an array of {r, c, player} cells that exploded that round.
     function processExplosions(gs) {
         const { grid, rows, cols } = gs;
-        let changed = true;
-        let safetyLimit = 1000;
+        const allWaves = [];
+        let safetyLimit = 500;
 
-        while (changed && safetyLimit-- > 0) {
-            changed = false;
-            // Collect all cells that should explode
+        while (safetyLimit-- > 0) {
             const burst = [];
             for (let r = 0; r < rows; r++)
                 for (let c = 0; c < cols; c++)
                     if (grid[r][c].count > criticalMass(c, r, cols, rows))
-                        burst.push([r, c]);
+                        burst.push({ r, c, player: grid[r][c].player });
 
             if (burst.length === 0) break;
-            changed = true;
 
-            burst.forEach(([r, c]) => {
+            // Record this wave (snapshot player BEFORE applying explosion)
+            allWaves.push(burst.map(b => ({ r: b.r, c: b.c, player: b.player })));
+
+            // Apply explosion
+            burst.forEach(({ r, c }) => {
                 const owner = grid[r][c].player;
                 const mass = criticalMass(c, r, cols, rows);
                 grid[r][c].count -= (mass + 1);
                 if (grid[r][c].count <= 0) { grid[r][c].count = 0; grid[r][c].player = -1; }
 
-                const neighbors = [[r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1]];
-                neighbors.forEach(([nr, nc]) => {
+                [[r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1]].forEach(([nr, nc]) => {
                     if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) return;
                     grid[nr][nc].player = owner;
                     grid[nr][nc].count++;
                 });
             });
         }
-    }
 
+        return allWaves;
+    }
     // Critical mass = max orbs before explosion (matches client maxOrbs logic)
     function criticalMass(x, y, cols, rows) {
         const corner = (x === 0 || x === cols - 1) && (y === 0 || y === rows - 1);
