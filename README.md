@@ -13,7 +13,7 @@ You can download the html file (index.html) and play the game locally on your de
 # Online version - Github pages
 Access the game directly through github pages.
 
-🔗 : https://github.com/joy-boy56/Chain-Web/
+🔗 : https://joy-boy56.github.io/Chain-Web/
 
 # Disclaimer 
 This project is an independent recreation inspired by the game mechanics of Chain Reaction. No affiliation with the original developers.
