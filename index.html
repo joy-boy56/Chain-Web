@@ -7,7 +7,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Chain Web</title>
+    <title>Chain Web - Multiplayer</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600&display=swap"
         rel="stylesheet">
@@ -20,14 +20,14 @@
             --text: #d4dce6;
             --text-soft: #8fa0b8;
             --st: env(safe-area-inset-top, 0px);
-            --sb: env(safe-area-inset-bottom, 0px);
+            --sb: env(safe-area-inset-bottom, 0px)
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+            -webkit-tap-highlight-color: transparent
         }
 
         html,
@@ -38,12 +38,9 @@
             background: var(--bg);
             color: var(--text);
             font-family: 'Rajdhani', sans-serif;
-            touch-action: manipulation;
+            touch-action: manipulation
         }
 
-        /* No aggressive body::before gradient — just clean flat background */
-
-        /* ── SCREENS ── */
         .screen {
             position: fixed;
             inset: 0;
@@ -53,45 +50,123 @@
             z-index: 1;
             overflow-y: auto;
             overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
+            -webkit-overflow-scrolling: touch
         }
 
         .screen.hidden {
-            display: none !important;
+            display: none !important
         }
 
-        /* ══════════════════════════════════════
-   SETUP SCREEN
-══════════════════════════════════════ */
-        #screen-setup {
+        /* MODE */
+        #screen-mode {
+            justify-content: center;
+            padding: max(var(--st), 20px) 20px max(var(--sb), 20px);
+            gap: 20px
+        }
+
+        .mode-header {
+            text-align: center;
+            padding: 10px 0;
+            width: 100%
+        }
+
+        .mode-header h1 {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            font-size: clamp(1.5rem, 6.5vw, 2.2rem);
+            letter-spacing: .12em;
+            color: #e2e8f0;
+            margin-bottom: 8px
+        }
+
+        .mode-header p {
+            font-size: .65rem;
+            letter-spacing: .2em;
+            color: var(--dim);
+            text-transform: uppercase
+        }
+
+        .mode-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            width: 100%;
+            max-width: 380px
+        }
+
+        .mode-btn {
+            padding: 20px 24px;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            font-family: 'Orbitron', monospace;
+            font-size: .9rem;
+            font-weight: 700;
+            letter-spacing: .1em;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all .25s ease;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, .25);
+            min-height: 70px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px
+        }
+
+        .mode-btn:hover {
+            border-color: #4a90d9;
+            background: var(--bg)
+        }
+
+        .mode-btn:active {
+            transform: scale(.97)
+        }
+
+        .mode-icon {
+            font-size: 1.5rem;
+            margin-bottom: 4px
+        }
+
+        .mode-subtitle {
+            font-size: .55rem;
+            color: var(--dim);
+            font-weight: 400;
+            letter-spacing: .12em
+        }
+
+        /* ONLINE LOBBY */
+        #screen-online {
             justify-content: flex-start;
             padding: max(var(--st), 14px) 14px max(var(--sb), 14px);
-            gap: 12px;
+            gap: 12px
         }
 
-        .setup-header {
+        .screen-header {
             text-align: center;
             padding: 10px 0 4px;
-            width: 100%;
+            width: 100%
         }
 
-        .setup-header h1 {
+        .screen-header h1 {
             font-family: 'Orbitron', monospace;
             font-weight: 700;
             font-size: clamp(1.2rem, 5.5vw, 1.7rem);
             letter-spacing: .1em;
-            color: #e2e8f0;
+            color: #e2e8f0
         }
 
-        .setup-header p {
+        .screen-header p {
             font-size: .6rem;
             letter-spacing: .2em;
             color: var(--dim);
             text-transform: uppercase;
-            margin-top: 3px;
+            margin-top: 3px
         }
 
-        .setup-card {
+        .card {
             width: 100%;
             max-width: 440px;
             background: var(--surface);
@@ -100,9 +175,9 @@
             padding: 18px 16px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 14px;
             margin: 0 auto;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, .3)
         }
 
         .field-label {
@@ -111,13 +186,140 @@
             color: var(--dim);
             text-transform: uppercase;
             margin-bottom: 7px;
-            display: block;
+            display: block
         }
 
-        /* Player count */
+        .text-input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: .95rem;
+            font-weight: 600
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #4a90d9
+        }
+
+        .room-code-box {
+            text-align: center;
+            padding: 20px;
+            background: var(--bg);
+            border: 2px dashed var(--border);
+            border-radius: 12px
+        }
+
+        .room-code-label {
+            font-size: .65rem;
+            letter-spacing: .15em;
+            color: var(--dim);
+            text-transform: uppercase;
+            margin-bottom: 8px
+        }
+
+        .room-code-value {
+            font-family: 'Orbitron', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: .3em;
+            color: #4CAF50
+        }
+
+        .player-list-label {
+            font-size: .65rem;
+            letter-spacing: .15em;
+            color: var(--dim);
+            text-transform: uppercase;
+            margin-bottom: 10px
+        }
+
+        .player-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px
+        }
+
+        .player-list-item {
+            padding: 10px 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: .9rem;
+            font-weight: 600
+        }
+
+        .mbtn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1.5px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            font-family: 'Orbitron', monospace;
+            font-size: .82rem;
+            font-weight: 700;
+            letter-spacing: .1em;
+            cursor: pointer;
+            text-transform: uppercase;
+            min-height: 50px;
+            transition: opacity .2s ease, transform .15s ease
+        }
+
+        .mbtn.primary {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            border-color: transparent;
+            box-shadow: 0 2px 12px rgba(37, 99, 235, .35)
+        }
+
+        .mbtn:active {
+            transform: scale(.97);
+            opacity: .9
+        }
+
+        .mbtn:disabled {
+            opacity: .4;
+            cursor: not-allowed;
+            transform: none
+        }
+
+        .waiting-pulse {
+            font-size: .7rem;
+            letter-spacing: .12em;
+            color: var(--dim);
+            text-align: center;
+            animation: pulse 1.8s ease-in-out infinite
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .4
+            }
+        }
+
+        /* SETUP (offline) */
+        #screen-setup {
+            justify-content: flex-start;
+            padding: max(var(--st), 14px) 14px max(var(--sb), 14px);
+            gap: 12px
+        }
+
         .pc-row {
             display: flex;
-            gap: 6px;
+            gap: 6px
         }
 
         .pc-btn {
@@ -133,20 +335,19 @@
             transition: all .2s ease;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: center
         }
 
         .pc-btn.active {
             border-color: currentColor;
             color: var(--text);
-            background: var(--surface);
+            background: var(--surface)
         }
 
-        /* Player names */
         .player-names {
             display: flex;
             flex-direction: column;
-            gap: 7px;
+            gap: 7px
         }
 
         .pname-row {
@@ -158,18 +359,18 @@
             border-radius: 8px;
             padding: 0 12px;
             height: 42px;
-            transition: border-color .2s ease;
+            transition: border-color .2s ease
         }
 
         .pname-row:focus-within {
-            border-color: #4a90d9;
+            border-color: #4a90d9
         }
 
         .pname-dot {
             width: 9px;
             height: 9px;
             border-radius: 50%;
-            flex-shrink: 0;
+            flex-shrink: 0
         }
 
         .pname-row input {
@@ -180,23 +381,22 @@
             color: var(--text);
             font-family: 'Rajdhani', sans-serif;
             font-size: .95rem;
-            font-weight: 600;
+            font-weight: 600
         }
 
-        /* Grid size */
         .gs-section-label {
             font-size: .55rem;
             letter-spacing: .15em;
             color: #3a4a5c;
             text-transform: uppercase;
             text-align: center;
-            margin: 2px 0;
+            margin: 2px 0
         }
 
         .gs-row {
             display: flex;
             gap: 7px;
-            margin-bottom: 0;
+            margin-bottom: 0
         }
 
         .gs-btn {
@@ -217,42 +417,40 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 2px;
+            gap: 2px
         }
 
         .gs-btn.active {
             border-color: #4a90d9;
             color: var(--text);
-            background: var(--surface);
+            background: var(--surface)
         }
 
         .gs-btn .gs-sub {
             font-size: .56rem;
             color: var(--dim);
             font-weight: 400;
-            letter-spacing: .05em;
+            letter-spacing: .05em
         }
 
         .gs-btn.active .gs-sub {
-            color: #7ab3e0;
+            color: #7ab3e0
         }
 
-        /* portrait variant */
         .gs-btn.portrait {
-            border-color: var(--border);
+            border-color: var(--border)
         }
 
         .gs-btn.portrait.active {
             border-color: #5aad8f;
             color: var(--text);
-            background: var(--surface);
+            background: var(--surface)
         }
 
         .gs-btn.portrait.active .gs-sub {
-            color: #7ec8b0;
+            color: #7ec8b0
         }
 
-        /* Settings row */
         .settings-row {
             display: flex;
             align-items: center;
@@ -261,7 +459,7 @@
             border: 1px solid var(--border);
             border-radius: 8px;
             padding: 0 14px;
-            height: 44px;
+            height: 44px
         }
 
         .settings-label {
@@ -270,24 +468,24 @@
             gap: 8px;
             font-size: .85rem;
             font-weight: 600;
-            color: var(--text-soft);
+            color: var(--text-soft)
         }
 
         .settings-label svg {
-            opacity: .5;
+            opacity: .5
         }
 
         .toggle-wrap {
             position: relative;
             width: 44px;
-            height: 24px;
+            height: 24px
         }
 
         .toggle-wrap input {
             opacity: 0;
             width: 0;
             height: 0;
-            position: absolute;
+            position: absolute
         }
 
         .toggle-track {
@@ -297,7 +495,7 @@
             background: var(--border);
             border: 1px solid #475569;
             cursor: pointer;
-            transition: background .25s ease, border-color .25s ease;
+            transition: background .25s ease, border-color .25s ease
         }
 
         .toggle-thumb {
@@ -308,20 +506,19 @@
             height: 18px;
             border-radius: 50%;
             background: #64748b;
-            transition: transform .25s ease, background .25s ease;
+            transition: transform .25s ease, background .25s ease
         }
 
         .toggle-wrap input:checked~.toggle-track {
             background: #1e3a2f;
-            border-color: #5aad8f;
+            border-color: #5aad8f
         }
 
         .toggle-wrap input:checked~.toggle-track .toggle-thumb {
             transform: translateX(20px);
-            background: #5aad8f;
+            background: #5aad8f
         }
 
-        /* Start button */
         #btn-start {
             width: 100%;
             padding: 14px;
@@ -335,24 +532,23 @@
             letter-spacing: .1em;
             cursor: pointer;
             text-transform: uppercase;
-            box-shadow: 0 2px 12px rgba(37, 99, 235, 0.35);
+            box-shadow: 0 2px 12px rgba(37, 99, 235, .35);
             min-height: 50px;
-            transition: opacity .2s ease, transform .15s ease;
+            transition: opacity .2s ease, transform .15s ease
         }
 
         #btn-start:active {
             transform: scale(.97);
-            opacity: .9;
+            opacity: .9
         }
 
-        /* GitHub footer */
         .setup-footer {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
             padding: 8px 0 4px;
-            width: 100%;
+            width: 100%
         }
 
         .github-link {
@@ -366,34 +562,32 @@
             transition: color .25s ease;
             padding: 6px 14px;
             border-radius: 20px;
-            border: 1px solid var(--border);
+            border: 1px solid var(--border)
         }
 
         .github-link:hover,
         .github-link:active {
             color: #7ab3e0;
-            border-color: #4a90d955;
+            border-color: #4a90d955
         }
 
         .github-link svg {
             flex-shrink: 0;
             fill: var(--dim);
-            transition: fill .25s ease;
+            transition: fill .25s ease
         }
 
         .github-link:hover svg,
         .github-link:active svg {
-            fill: #7ab3e0;
+            fill: #7ab3e0
         }
 
-        /* ══════════════════════════════════════
-   GAME SCREEN
-══════════════════════════════════════ */
+        /* GAME */
         #screen-game {
             justify-content: flex-start;
             padding: max(var(--st), 4px) 8px max(var(--sb), 4px);
             gap: 0;
-            overflow: hidden;
+            overflow: hidden
         }
 
         .hud {
@@ -403,7 +597,7 @@
             align-items: center;
             gap: 6px;
             padding: 4px 0;
-            flex-shrink: 0;
+            flex-shrink: 0
         }
 
         .hud-turn {
@@ -415,25 +609,26 @@
             border: 1px solid var(--border);
             border-radius: 8px;
             padding: 5px 10px;
-            min-width: 0;
+            min-width: 0
         }
 
         .hud-dot {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            flex-shrink: 0;
+            flex-shrink: 0
         }
 
         .hud-info {
             min-width: 0;
+            flex: 1
         }
 
         .hud-lbl {
             font-size: .48rem;
             letter-spacing: .12em;
             color: var(--dim);
-            text-transform: uppercase;
+            text-transform: uppercase
         }
 
         .hud-name {
@@ -444,13 +639,23 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            color: var(--text);
+            color: var(--text)
+        }
+
+        .hud-badge {
+            font-size: .5rem;
+            letter-spacing: .1em;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            flex-shrink: 0
         }
 
         .hud-actions {
             display: flex;
             gap: 5px;
-            flex-shrink: 0;
+            flex-shrink: 0
         }
 
         .hud-btn {
@@ -468,16 +673,16 @@
             font-family: 'Rajdhani', sans-serif;
             font-weight: 600;
             transition: color .2s ease, border-color .2s ease;
-            flex-shrink: 0;
+            flex-shrink: 0
         }
 
         .hud-btn:active {
-            color: var(--text);
+            color: var(--text)
         }
 
         .hud-btn.vib-on {
             color: #5aad8f;
-            border-color: #5aad8f55;
+            border-color: #5aad8f55
         }
 
         .chips-bar {
@@ -489,11 +694,11 @@
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
             padding: 2px 0 3px;
-            flex-shrink: 0;
+            flex-shrink: 0
         }
 
         .chips-bar::-webkit-scrollbar {
-            display: none;
+            display: none
         }
 
         .chip {
@@ -507,28 +712,27 @@
             font-size: .6rem;
             letter-spacing: .03em;
             white-space: nowrap;
-            transition: border-color .25s ease, box-shadow .25s ease;
+            transition: border-color .25s ease;
             flex-shrink: 0;
-            color: var(--text-soft);
+            color: var(--text-soft)
         }
 
         .chip.active {
             border-color: currentColor;
-            color: var(--text);
+            color: var(--text)
         }
 
         .chip.eliminated {
             opacity: .2;
-            text-decoration: line-through;
+            text-decoration: line-through
         }
 
         .chip-dot {
             width: 6px;
             height: 6px;
-            border-radius: 50%;
+            border-radius: 50%
         }
 
-        /* Grid fills everything below chips bar */
         .grid-outer {
             width: 100%;
             max-width: 520px;
@@ -537,7 +741,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 3px 0;
+            padding: 3px 0
         }
 
         #grid-wrap {
@@ -547,28 +751,28 @@
             border-radius: 14px;
             padding: 6px;
             touch-action: none;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.28);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, .28)
         }
 
         #grid {
             display: grid;
-            gap: 4px;
+            gap: 4px
         }
 
         .cell {
             background: #0e1420;
             border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, .04);
             cursor: pointer;
             position: relative;
             transition: border-color .25s ease, background .25s ease;
             min-width: 50px;
-            min-height: 50px;
+            min-height: 50px
         }
 
         .cell:active {
             transform: scale(.88);
-            transition: transform .08s ease;
+            transition: transform .08s ease
         }
 
         #anim-canvas {
@@ -578,12 +782,10 @@
             height: 100%;
             pointer-events: none;
             border-radius: 14px;
-            z-index: 10;
+            z-index: 10
         }
 
-        /* ══════════════════════════════════════
-   WIN OVERLAY
-══════════════════════════════════════ */
+        /* WIN */
         #screen-win {
             position: fixed;
             inset: 0;
@@ -595,36 +797,24 @@
             justify-content: center;
             gap: 14px;
             text-align: center;
-            padding: 24px;
+            padding: 24px
         }
 
         #screen-win.hidden {
-            display: none;
+            display: none
         }
 
         .win-emoji {
             font-size: clamp(2.8rem, 13vw, 4.5rem);
-            line-height: 1;
+            line-height: 1
         }
 
         .win-title {
             font-family: 'Orbitron', monospace;
             font-size: clamp(1.4rem, 6.5vw, 2.4rem);
             font-weight: 700;
-            animation: gentlePulse 2s ease-in-out infinite;
-            color: var(--text);
-        }
-
-        @keyframes gentlePulse {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: .75;
-            }
+            animation: pulse 2s ease-in-out infinite;
+            color: var(--text)
         }
 
         .win-sub {
@@ -632,7 +822,7 @@
             color: var(--text-soft);
             letter-spacing: .12em;
             font-family: 'Rajdhani', sans-serif;
-            font-weight: 600;
+            font-weight: 600
         }
 
         .win-actions {
@@ -640,7 +830,7 @@
             gap: 10px;
             flex-wrap: wrap;
             justify-content: center;
-            margin-top: 6px;
+            margin-top: 6px
         }
 
         .win-btn {
@@ -655,53 +845,135 @@
             letter-spacing: .08em;
             text-transform: uppercase;
             min-height: 46px;
-            transition: border-color .2s ease, opacity .2s ease;
+            transition: border-color .2s ease, opacity .2s ease
         }
 
         .win-btn.primary {
             background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            border-color: transparent;
+            border-color: transparent
         }
 
         .win-btn:active {
             transform: scale(.96);
-            opacity: .85;
+            opacity: .85
         }
     </style>
 </head>
 
 <body>
 
-    <!-- ══ SETUP ══ -->
-    <div id="screen-setup" class="screen">
-        <div class="setup-header">
+    <!-- ══ MODE SELECTION ══ -->
+    <div id="screen-mode" class="screen">
+        <div class="mode-header">
             <h1>Chain Web</h1>
             <p>Strategic Domination</p>
         </div>
+        <div class="mode-buttons">
+            <button class="mode-btn" onclick="goOffline()">
+                <div class="mode-icon">🎮</div>
+                <div>Offline Mode</div>
+                <div class="mode-subtitle">Local · Up to 8 Players</div>
+            </button>
+            <button class="mode-btn" onclick="goOnline()">
+                <div class="mode-icon">🌐</div>
+                <div>Online Mode</div>
+                <div class="mode-subtitle">Play with Friends · 2–4 Players</div>
+            </button>
+        </div>
+        <div class="setup-footer">
+            <a href="https://github.com/joy-boy56" class="github-link" target="_blank">
+                <svg width="16" height="16" viewBox="0 0 24 24">
+                    <path
+                        d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+                </svg>
+                GitHub
+            </a>
+        </div>
+    </div>
 
-        <div class="setup-card">
+    <!-- ══ ONLINE LOBBY ══ -->
+    <div id="screen-online" class="screen hidden">
+        <div class="screen-header">
+            <h1>Online Mode</h1>
+            <p id="online-subtitle">Create or join a room</p>
+        </div>
 
+        <!-- Main menu -->
+        <div id="op-menu" class="card">
+            <div>
+                <span class="field-label">Server URL</span>
+                <input type="text" id="serverUrl" class="text-input" value="ws://localhost:3001"
+                    placeholder="ws://localhost:3001">
+            </div>
+            <button class="mbtn primary" onclick="showPanel('op-host')">Create Room (Host)</button>
+            <button class="mbtn" onclick="showPanel('op-join')">Join Room (Guest)</button>
+            <button class="mbtn" onclick="backToMode()">← Back</button>
+        </div>
+
+        <!-- Host: pick grid then create -->
+        <div id="op-host" class="card hidden">
+            <div>
+                <span class="field-label">Grid Size</span>
+                <div class="gs-section-label">— Landscape —</div>
+                <div class="gs-row" id="online-gs-land" style="margin-bottom:6px;"></div>
+                <div class="gs-section-label">— Portrait —</div>
+                <div class="gs-row" id="online-gs-port"></div>
+            </div>
+            <button class="mbtn primary" onclick="doCreateRoom()">Create Room</button>
+            <button class="mbtn" onclick="showPanel('op-menu')">← Back</button>
+        </div>
+
+        <!-- Guest: enter code -->
+        <div id="op-join" class="card hidden">
+            <div>
+                <span class="field-label">Room Code</span>
+                <input type="text" id="roomCodeInput" class="text-input" placeholder="XXXXXX" maxlength="6"
+                    style="text-transform:uppercase;letter-spacing:.25em;font-family:'Orbitron',monospace;font-size:1.2rem;text-align:center;">
+            </div>
+            <button class="mbtn primary" onclick="doJoinRoom()">Join Room</button>
+            <button class="mbtn" onclick="showPanel('op-menu')">← Back</button>
+        </div>
+
+        <!-- Waiting room -->
+        <div id="op-wait" class="card hidden">
+            <div class="room-code-box">
+                <div class="room-code-label">Room Code — Share This!</div>
+                <div class="room-code-value" id="roomCodeDisplay">------</div>
+            </div>
+            <div>
+                <div class="player-list-label">Players in Room</div>
+                <div class="player-list" id="playerList"></div>
+            </div>
+            <div class="waiting-pulse" id="waitingText">Waiting for players…</div>
+            <button class="mbtn primary" id="startGameBtn" onclick="hostStartGame()" disabled>
+                Start Game (Need 2+ players)
+            </button>
+            <button class="mbtn" onclick="leaveRoom()">Leave Room</button>
+        </div>
+    </div>
+
+    <!-- ══ OFFLINE SETUP ══ -->
+    <div id="screen-setup" class="screen hidden">
+        <div class="screen-header">
+            <h1>Chain Web</h1>
+            <p>Strategic Domination</p>
+        </div>
+        <div class="card">
             <div>
                 <span class="field-label">Players</span>
                 <div class="pc-row" id="pc-row"></div>
             </div>
-
             <div>
                 <span class="field-label">Player Names</span>
                 <div class="player-names" id="pnames"></div>
             </div>
-
             <div>
                 <span class="field-label">Grid Size</span>
-                <!-- Landscape grids -->
                 <div class="gs-section-label">— Landscape —</div>
                 <div class="gs-row" id="gs-row-land" style="margin-bottom:6px;"></div>
-                <!-- Portrait grids -->
                 <div class="gs-section-label">— Portrait —</div>
                 <div class="gs-row" id="gs-row-port"></div>
             </div>
-
-            <!-- Vibration toggle -->
             <div class="settings-row">
                 <span class="settings-label">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="#aaa">
@@ -716,28 +988,11 @@
                     </div>
                 </label>
             </div>
-
             <button id="btn-start">▶ Start Game</button>
         </div>
-
-        <!-- GitHub footer -->
         <div class="setup-footer">
-            <a id="github-link" href="https://github.com/joy-boy56" class="github-link"
-                onclick="window.open('https://github.com/YOUR_USERNAME','_blank');return false;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="#33334a">
-                    <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 
-        0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 
-        3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 
-        1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 
-        0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 
-        3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 
-        3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 
-        1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 
-        0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 
-        24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
-                </svg>
-                GitHub
-            </a>
+            <button class="mbtn" onclick="backToMode()" style="max-width:200px;min-height:40px;font-size:.75rem;">←
+                Back</button>
         </div>
     </div>
 
@@ -747,9 +1002,10 @@
             <div class="hud-turn">
                 <div class="hud-dot" id="hud-dot"></div>
                 <div class="hud-info">
-                    <div class="hud-lbl">Current Turn</div>
+                    <div class="hud-lbl" id="hud-lbl">Current Turn</div>
                     <div class="hud-name" id="hud-name">—</div>
                 </div>
+                <span class="hud-badge hidden" id="hud-badge"></span>
             </div>
             <div class="hud-actions">
                 <button class="hud-btn vib-on" id="hud-vib" title="Toggle vibration">
@@ -760,9 +1016,7 @@
                 <button class="hud-btn" id="btn-menu">☰</button>
             </div>
         </div>
-
         <div class="chips-bar" id="chips-bar"></div>
-
         <div class="grid-outer">
             <div id="grid-wrap">
                 <div id="grid"></div>
@@ -783,19 +1037,10 @@
     </div>
 
     <script>
-        // ═══════════════════════════════════
-        //  CONFIG
-        // ═══════════════════════════════════
-        const COLORS = [
-            '#d96b7a', // dusty rose
-            '#5f8fd6', // steel blue
-            '#5fa985', // sage green
-            '#c9a25f', // warm sand
-            '#9b84c9', // soft violet
-            '#c87f63', // terracotta
-            '#5fa3a8', // muted teal
-            '#b884a8', // dusty mauve
-        ];
+        // ═══════════════════════════════════════════
+        //  CONSTANTS
+        // ═══════════════════════════════════════════
+        const COLORS = ['#d96b7a', '#5f8fd6', '#5fa985', '#c9a25f', '#9b84c9', '#c87f63', '#5fa3a8', '#b884a8'];
 
         const GRIDS_LAND = [
             { label: '5×4', sub: 'Quick', rows: 4, cols: 5 },
@@ -810,41 +1055,44 @@
             { label: '8×11', sub: 'Epic', rows: 11, cols: 8 },
         ];
 
-        // ═══════════════════════════════════
-        //  STATE
-        // ═══════════════════════════════════
+        // ═══════════════════════════════════════════
+        //  GAME STATE  (single source of truth)
+        // ═══════════════════════════════════════════
         let numPlayers = 2, gridSet = 'land', gridIdx = 2;
         let players = [], board = [], rows = 0, cols = 0;
         let currentPlayer = 0, moveCount = 0;
         let animating = false, gameActive = false;
         let vibEnabled = true;
 
-        // ═══════════════════════════════════
-        //  VIBRATION
-        // ═══════════════════════════════════
-        function vibrate(pattern) {
-            if (!vibEnabled) return;
-            if (navigator.vibrate) navigator.vibrate(pattern);
-        }
+        // ═══════════════════════════════════════════
+        //  ONLINE STATE
+        // ═══════════════════════════════════════════
+        let onlineMode = false, ws = null;
+        let myRoomCode = null, myPlayerId = null, myPlayerIndex = -1, amHost = false;
+        let onlinePlayers = [];                        // array of playerId strings
+        let onlineGridSet = 'land', onlineGridIdx = 2;   // host's chosen grid
 
-        // ═══════════════════════════════════
-        //  CANVAS ENGINE
-        // ═══════════════════════════════════
+        // ═══════════════════════════════════════════
+        //  VIBRATION
+        // ═══════════════════════════════════════════
+        function vibrate(p) { if (vibEnabled && navigator.vibrate) navigator.vibrate(p); }
+
+        // ═══════════════════════════════════════════
+        //  CANVAS
+        // ═══════════════════════════════════════════
         const canvas = document.getElementById('anim-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [], cellFx = {}, transients = [];
         let rafId = null, lastTime = 0;
 
-        function h2r(hex) { return { r: parseInt(hex.slice(1, 3), 16), g: parseInt(hex.slice(3, 5), 16), b: parseInt(hex.slice(5, 7), 16) }; }
+        function h2r(h) { return { r: parseInt(h.slice(1, 3), 16), g: parseInt(h.slice(3, 5), 16), b: parseInt(h.slice(5, 7), 16) }; }
 
         function loopStart() {
-            if (rafId) return;
-            lastTime = performance.now();
-            function frame(now) { const dt = Math.min((now - lastTime) / 1000, 0.05); lastTime = now; draw(dt); rafId = requestAnimationFrame(frame); }
+            if (rafId) return; lastTime = performance.now();
+            function frame(now) { const dt = Math.min((now - lastTime) / 1000, .05); lastTime = now; draw(dt); rafId = requestAnimationFrame(frame); }
             rafId = requestAnimationFrame(frame);
         }
         function loopStop() { if (rafId) { cancelAnimationFrame(rafId); rafId = null; } }
-
         function resizeCanvas() { const w = document.getElementById('grid-wrap'); canvas.width = w.offsetWidth; canvas.height = w.offsetHeight; }
 
         function cellGeom(r, c) {
@@ -859,38 +1107,29 @@
         function draw(dt) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // 1. Per-cell orb rendering + tension
             for (const key in cellFx) {
                 const fx = cellFx[key]; if (!fx || fx.orbs <= 0) continue;
                 fx.t += dt;
                 const [r, c] = key.split('_').map(Number);
                 const g = cellGeom(r, c), rgb = h2r(fx.color), max = fx.max;
                 const ratio = (fx.orbs - 1) / max, critical = fx.orbs >= max;
-
-                // Ambient glow — reduced alpha ~35% from previous
                 const ga = 0.02 + ratio * 0.07 + (critical ? Math.abs(Math.sin(fx.t * 10)) * 0.05 : 0);
                 const gr = g.w * (0.50 + ratio * 0.35);
                 const grd = ctx.createRadialGradient(g.x, g.y, 0, g.x, g.y, gr);
                 grd.addColorStop(0, `rgba(${rgb.r},${rgb.g},${rgb.b},${ga})`);
                 grd.addColorStop(1, `rgba(${rgb.r},${rgb.g},${rgb.b},0)`);
                 ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(g.x, g.y, gr, 0, Math.PI * 2); ctx.fill();
-
-                // Shake: reduced amplitude ~30%
                 const shakeMag = critical ? g.w * 0.05 * Math.abs(Math.sin(fx.t * 18)) : g.w * 0.015 * ratio * Math.sin(fx.t * 7);
                 drawOrbs(g, fx.orbs, fx.color, shakeMag, ratio, fx.t, critical);
-
                 if (critical) {
                     const rp = Math.sin(fx.t * 9) * .5 + .5;
-                    // Critical ring: alpha reduced ~35%
                     ctx.strokeStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},${.18 + rp * .2})`;
                     ctx.lineWidth = 0.8 + rp * 0.7;
                     ctx.beginPath(); ctx.arc(g.x, g.y, g.w * .46 * (.9 + rp * .08), 0, Math.PI * 2); ctx.stroke();
-                    // Sparks: reduced to 7% chance (was 15%)
                     if (Math.random() < .07) addSpark(g.x, g.y, g.w * .18, fx.color);
                 }
             }
 
-            // 2. Transients
             transients = transients.filter(fx => {
                 fx.t += dt;
                 const p = Math.min(fx.t / fx.dur, 1);
@@ -898,7 +1137,6 @@
                 const g = cellGeom(r, c), rgb = h2r(fx.color);
                 if (fx.type === 'shockwave') {
                     const e = 1 - Math.pow(1 - p, 3), r1 = g.w * 2.5 * e;
-                    // alpha reduced ~35%: was 0.55 → 0.36
                     ctx.strokeStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},${(1 - e) * .36})`;
                     ctx.lineWidth = 1.5 * (1 - e) + .4;
                     ctx.beginPath(); ctx.arc(g.x, g.y, r1, 0, Math.PI * 2); ctx.stroke();
@@ -908,9 +1146,7 @@
                         ctx.lineWidth = 0.8; ctx.beginPath(); ctx.arc(g.x, g.y, r2, 0, Math.PI * 2); ctx.stroke();
                     }
                 } else if (fx.type === 'absorb') {
-                    const e = Math.sin(p * Math.PI), r1 = g.w * .65 * e;
-                    // alpha reduced ~35%: was 0.55 → 0.36
-                    const a = e * .36;
+                    const e = Math.sin(p * Math.PI), r1 = g.w * .65 * e, a = e * .36;
                     const gr = ctx.createRadialGradient(g.x, g.y, 0, g.x, g.y, r1);
                     gr.addColorStop(0, `rgba(255,255,255,${a * .5})`);
                     gr.addColorStop(.35, `rgba(${rgb.r},${rgb.g},${rgb.b},${a})`);
@@ -918,7 +1154,6 @@
                     ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(g.x, g.y, r1, 0, Math.PI * 2); ctx.fill();
                 } else if (fx.type === 'preexplode') {
                     const st = Math.abs(Math.sin(fx.t * 30)), r1 = g.w * (.4 + p * .6);
-                    // alpha reduced ~35%: was (.25+st*.3) → (.16+st*.2)
                     const a = (.16 + st * .2) * (1 - p * .2);
                     const gr = ctx.createRadialGradient(g.x, g.y, 0, g.x, g.y, r1);
                     gr.addColorStop(0, `rgba(255,255,255,${a * .55})`);
@@ -931,7 +1166,6 @@
                 return p < 1;
             });
 
-            // 3. Particles — alpha*.7 → *.45, glow radius 2 → 1.6
             particles = particles.filter(p => {
                 p.t += dt; if (p.t >= p.life) return false;
                 const prog = p.t / p.life;
@@ -948,7 +1182,7 @@
         }
 
         function drawOrbs(g, count, color, shake, tension, t, critical) {
-            const rgb = h2r(color), orbR = Math.max(g.w * .20, 6); // larger orb radius
+            const rgb = h2r(color), orbR = Math.max(g.w * .20, 6);
             const layouts = [[[0, 0]], [[-1, 0], [1, 0]], [[0, -1], [-.9, .75], [.9, .75]], [[-.9, -.9], [.9, -.9], [-.9, .9], [.9, .9]]];
             const layout = layouts[Math.min(count, 4) - 1];
             layout.forEach((off, i) => {
@@ -956,55 +1190,41 @@
                 const breathe = Math.sin(phase) * orbR * (critical ? .12 : .04 + tension * .06);
                 const sx = shake * Math.sin(t * 22 + i * 2 + .8), sy = shake * Math.cos(t * 22 + i * 1.8 + 1.2);
                 const ox = g.x + off[0] * orbR * 1.35 + sx, oy = g.y + off[1] * orbR * 1.35 + sy, r = orbR + breathe;
-                // Subtle corona — alpha reduced ~35%
                 const coronaR = r * (1.35 + tension * .7 + (critical ? Math.abs(Math.sin(t * 9 + i)) * .45 : 0));
                 const coronaA = .08 + tension * .13 + (critical ? Math.abs(Math.sin(t * 8 + i)) * .10 : 0);
                 const cg = ctx.createRadialGradient(ox, oy, r * .4, ox, oy, coronaR);
                 cg.addColorStop(0, `rgba(${rgb.r},${rgb.g},${rgb.b},${coronaA})`);
                 cg.addColorStop(1, `rgba(${rgb.r},${rgb.g},${rgb.b},0)`);
                 ctx.fillStyle = cg; ctx.beginPath(); ctx.arc(ox, oy, coronaR, 0, Math.PI * 2); ctx.fill();
-                // Orb body — matte finish, no harsh white center
                 const bg = ctx.createRadialGradient(ox - r * .2, oy - r * .22, r * .01, ox, oy, r);
                 bg.addColorStop(0, `rgba(${Math.min(rgb.r + 55, 255)},${Math.min(rgb.g + 55, 255)},${Math.min(rgb.b + 55, 255)},0.82)`);
                 bg.addColorStop(.45, `rgba(${rgb.r},${rgb.g},${rgb.b},0.88)`);
                 bg.addColorStop(.85, `rgba(${Math.floor(rgb.r * .45)},${Math.floor(rgb.g * .45)},${Math.floor(rgb.b * .45)},0.84)`);
                 bg.addColorStop(1, `rgba(${Math.floor(rgb.r * .18)},${Math.floor(rgb.g * .18)},${Math.floor(rgb.b * .18)},0.78)`);
                 ctx.fillStyle = bg; ctx.beginPath(); ctx.arc(ox, oy, r, 0, Math.PI * 2); ctx.fill();
-                // Tiny soft specular — barely there
                 ctx.fillStyle = 'rgba(255,255,255,0.10)'; ctx.beginPath(); ctx.arc(ox - r * .22, oy - r * .24, r * .13, 0, Math.PI * 2); ctx.fill();
             });
         }
 
         function addSpark(x, y, maxR, color) {
             const a = Math.random() * Math.PI * 2, d = Math.random() * maxR;
-            particles.push({
-                x: x + Math.cos(a) * d, y: y + Math.sin(a) * d, vx: (Math.random() - .5) * 50, vy: (Math.random() - .5) * 50,
-                size: 1.5 + Math.random() * 2, color, alpha: .9, life: .12 + Math.random() * .22, t: 0
-            });
+            particles.push({ x: x + Math.cos(a) * d, y: y + Math.sin(a) * d, vx: (Math.random() - .5) * 50, vy: (Math.random() - .5) * 50, size: 1.5 + Math.random() * 2, color, alpha: .9, life: .12 + Math.random() * .22, t: 0 });
         }
-
         function explodeParticles(r, c, color) {
             const g = cellGeom(r, c);
             for (let i = 0; i < 12; i++) {
                 const a = Math.random() * Math.PI * 2, sp = g.w * (.9 + Math.random() * 1.8);
-                particles.push({
-                    x: g.x + (Math.random() - .5) * g.w * .3, y: g.y + (Math.random() - .5) * g.h * .3,
-                    vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, size: g.w * (.05 + Math.random() * .07), color, alpha: 1, life: .25 + Math.random() * .3, t: 0
-                });
+                particles.push({ x: g.x + (Math.random() - .5) * g.w * .3, y: g.y + (Math.random() - .5) * g.h * .3, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, size: g.w * (.05 + Math.random() * .07), color, alpha: 1, life: .25 + Math.random() * .3, t: 0 });
             }
             [[r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1]].forEach(([nr, nc]) => {
                 if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) return;
                 const ng = cellGeom(nr, nc), ang = Math.atan2(ng.y - g.y, ng.x - g.x);
                 for (let i = 0; i < 5; i++) {
                     const sp2 = (Math.random() - .5) * .5, speed = g.w * (1.5 + Math.random() * 1.8);
-                    particles.push({
-                        x: g.x, y: g.y, vx: Math.cos(ang + sp2) * speed, vy: Math.sin(ang + sp2) * speed,
-                        size: g.w * (.06 + Math.random() * .07), color, alpha: .9, life: .15 + Math.random() * .18, t: 0
-                    });
+                    particles.push({ x: g.x, y: g.y, vx: Math.cos(ang + sp2) * speed, vy: Math.sin(ang + sp2) * speed, size: g.w * (.06 + Math.random() * .07), color, alpha: .9, life: .15 + Math.random() * .18, t: 0 });
                 }
             });
         }
-
         function setCellFx(r, c, orbs, max, color) {
             const k = `${r}_${c}`;
             if (orbs <= 0) { delete cellFx[k]; return; }
@@ -1012,166 +1232,193 @@
         }
         function addTransient(type, r, c, color, dur) { transients.push({ type, cell: [r, c], color, dur, t: 0 }); }
 
-        // ═══════════════════════════════════
-        //  SETUP UI
-        // ═══════════════════════════════════
-        const pcRowEl = document.getElementById('pc-row');
-        const pnamesEl = document.getElementById('pnames');
-        const gsLandEl = document.getElementById('gs-row-land');
-        const gsPortEl = document.getElementById('gs-row-port');
-
-        // Player count buttons
-        for (let i = 2; i <= 8; i++) {
-            const btn = document.createElement('button');
-            btn.className = 'pc-btn' + (i === numPlayers ? ' active' : '');
-            btn.textContent = i; btn.style.color = COLORS[i - 1];
-            btn.onclick = () => {
-                numPlayers = i;
-                document.querySelectorAll('.pc-btn').forEach((b, idx) => b.classList.toggle('active', idx + 2 === numPlayers));
-                buildNameFields();
-            };
-            pcRowEl.appendChild(btn);
+        // ═══════════════════════════════════════════
+        //  SCREEN / NAV HELPERS
+        // ═══════════════════════════════════════════
+        const $ = id => document.getElementById(id);
+        function show(id) { $(id).classList.remove('hidden'); }
+        function hide(id) { $(id).classList.add('hidden'); }
+        function showOnly(...ids) {
+            ['screen-mode', 'screen-online', 'screen-setup', 'screen-game', 'screen-win'].forEach(id => hide(id));
+            ids.forEach(show);
+        }
+        function showPanel(id) {
+            ['op-menu', 'op-host', 'op-join', 'op-wait'].forEach(p => hide(p));
+            show(id);
         }
 
-        // Grid buttons — landscape
-        GRIDS_LAND.forEach((gs, i) => {
-            const btn = document.createElement('button');
-            btn.className = 'gs-btn' + (gridSet === 'land' && i === gridIdx ? ' active' : '');
-            btn.dataset.set = 'land'; btn.dataset.idx = i;
-            btn.innerHTML = `${gs.label}<span class="gs-sub">${gs.sub}</span>`;
-            btn.onclick = () => selectGrid('land', i);
-            gsLandEl.appendChild(btn);
-        });
-
-        // Grid buttons — portrait
-        GRIDS_PORT.forEach((gs, i) => {
-            const btn = document.createElement('button');
-            btn.className = 'gs-btn portrait' + (gridSet === 'port' && i === gridIdx ? ' active' : '');
-            btn.dataset.set = 'port'; btn.dataset.idx = i;
-            btn.innerHTML = `${gs.label}<span class="gs-sub">${gs.sub}</span>`;
-            btn.onclick = () => selectGrid('port', i);
-            gsPortEl.appendChild(btn);
-        });
-
-        function selectGrid(set, idx) {
-            gridSet = set; gridIdx = idx;
-            document.querySelectorAll('.gs-btn').forEach(b => {
-                b.classList.toggle('active', b.dataset.set === set && +b.dataset.idx === idx);
-            });
-        }
-
-        function buildNameFields() {
-            pnamesEl.innerHTML = '';
-            for (let i = 0; i < numPlayers; i++) {
-                const row = document.createElement('div'); row.className = 'pname-row';
-                const dot = document.createElement('div'); dot.className = 'pname-dot';
-                dot.style.background = COLORS[i]; dot.style.boxShadow = `0 0 5px ${COLORS[i]}`;
-                const inp = document.createElement('input');
-                inp.type = 'text'; inp.value = `Player ${i + 1}`; inp.id = `pn-${i}`;
-                inp.style.caretColor = COLORS[i];
-                row.appendChild(dot); row.appendChild(inp); pnamesEl.appendChild(row);
-            }
-        }
-        buildNameFields();
-
-        // Vibration toggle (setup)
-        const vibToggle = document.getElementById('vib-toggle');
-        vibToggle.addEventListener('change', () => {
-            vibEnabled = vibToggle.checked;
-            syncVibBtn();
-            if (vibEnabled) vibrate([10]);
-        });
-
-        // Vibration button (in-game)
-        const hudVib = document.getElementById('hud-vib');
-        hudVib.addEventListener('click', () => {
-            vibEnabled = !vibEnabled;
-            vibToggle.checked = vibEnabled;
-            syncVibBtn();
-            if (vibEnabled) vibrate([10]);
-        });
-
-        function syncVibBtn() {
-            hudVib.classList.toggle('vib-on', vibEnabled);
-            hudVib.title = vibEnabled ? 'Vibration ON' : 'Vibration OFF';
-        }
-
-
-        // Buttons
-        document.getElementById('btn-start').onclick = startGame;
-        document.getElementById('btn-menu').onclick = goMenu;
-        document.getElementById('btn-again').onclick = () => { hide('screen-win'); startGame(); };
-        document.getElementById('btn-menu2').onclick = () => { hide('screen-win'); goMenu(); };
-
-        // ═══════════════════════════════════
-        //  SCREEN HELPERS
-        // ═══════════════════════════════════
-        function show(id) { document.getElementById(id).classList.remove('hidden'); }
-        function hide(id) { document.getElementById(id).classList.add('hidden'); }
+        function goOffline() { showOnly('screen-setup'); }
+        function goOnline() { showOnly('screen-online'); showPanel('op-menu'); }
+        function backToMode() { disconnectWs(); showOnly('screen-mode'); }
 
         function goMenu() {
-            hide('screen-game'); show('screen-setup');
-            gameActive = false; loopStop();
-            particles = []; cellFx = {}; transients = [];
+            if (onlineMode) {
+                if (!confirm('Leave the online game?')) return;
+                disconnectWs();
+                gameActive = false; loopStop();
+                particles = []; cellFx = {}; transients = [];
+                showOnly('screen-mode');
+            } else {
+                gameActive = false; loopStop();
+                particles = []; cellFx = {}; transients = [];
+                hide('screen-game'); show('screen-setup');
+            }
         }
 
-        // ═══════════════════════════════════
-        //  GAME START
-        // ═══════════════════════════════════
-        function startGame() {
-            players = [];
+        // ═══════════════════════════════════════════
+        //  OFFLINE SETUP UI
+        // ═══════════════════════════════════════════
+        (function buildOfflineUI() {
+            const pcRowEl = $('pc-row'), pnamesEl = $('pnames'), gsLandEl = $('gs-row-land'), gsPortEl = $('gs-row-port');
+
+            for (let i = 2; i <= 8; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'pc-btn' + (i === numPlayers ? ' active' : '');
+                btn.textContent = i; btn.style.color = COLORS[i - 1];
+                btn.onclick = () => {
+                    numPlayers = i;
+                    document.querySelectorAll('.pc-btn').forEach((b, idx) => b.classList.toggle('active', idx + 2 === numPlayers));
+                    buildNameFields();
+                };
+                pcRowEl.appendChild(btn);
+            }
+
+            GRIDS_LAND.forEach((gs, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'gs-btn' + (gridSet === 'land' && i === gridIdx ? ' active' : '');
+                btn.dataset.set = 'land'; btn.dataset.idx = i;
+                btn.innerHTML = `${gs.label}<span class="gs-sub">${gs.sub}</span>`;
+                btn.onclick = () => selectGrid('land', i);
+                gsLandEl.appendChild(btn);
+            });
+            GRIDS_PORT.forEach((gs, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'gs-btn portrait' + (gridSet === 'port' && i === gridIdx ? ' active' : '');
+                btn.dataset.set = 'port'; btn.dataset.idx = i;
+                btn.innerHTML = `${gs.label}<span class="gs-sub">${gs.sub}</span>`;
+                btn.onclick = () => selectGrid('port', i);
+                gsPortEl.appendChild(btn);
+            });
+
+            function selectGrid(set, idx) {
+                gridSet = set; gridIdx = idx;
+                document.querySelectorAll('.gs-btn[data-set]').forEach(b => b.classList.toggle('active', b.dataset.set === set && +b.dataset.idx === idx));
+            }
+
+            function buildNameFields() {
+                pnamesEl.innerHTML = '';
+                for (let i = 0; i < numPlayers; i++) {
+                    const row = document.createElement('div'); row.className = 'pname-row';
+                    const dot = document.createElement('div'); dot.className = 'pname-dot';
+                    dot.style.background = COLORS[i]; dot.style.boxShadow = `0 0 5px ${COLORS[i]}`;
+                    const inp = document.createElement('input');
+                    inp.type = 'text'; inp.value = `Player ${i + 1}`; inp.id = `pn-${i}`; inp.style.caretColor = COLORS[i];
+                    row.appendChild(dot); row.appendChild(inp); pnamesEl.appendChild(row);
+                }
+            }
+            buildNameFields();
+        })();
+
+        // ═══════════════════════════════════════════
+        //  ONLINE GRID PICKER  (for host)
+        // ═══════════════════════════════════════════
+        (function buildOnlineGridUI() {
+            const landEl = $('online-gs-land'), portEl = $('online-gs-port');
+            GRIDS_LAND.forEach((gs, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'gs-btn' + (onlineGridSet === 'land' && i === onlineGridIdx ? ' active' : '');
+                btn.dataset.oset = 'land'; btn.dataset.oidx = i;
+                btn.innerHTML = `${gs.label}<span class="gs-sub">${gs.sub}</span>`;
+                btn.onclick = () => pickOnlineGrid('land', i);
+                landEl.appendChild(btn);
+            });
+            GRIDS_PORT.forEach((gs, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'gs-btn portrait' + (onlineGridSet === 'port' && i === onlineGridIdx ? ' active' : '');
+                btn.dataset.oset = 'port'; btn.dataset.oidx = i;
+                btn.innerHTML = `${gs.label}<span class="gs-sub">${gs.sub}</span>`;
+                btn.onclick = () => pickOnlineGrid('port', i);
+                portEl.appendChild(btn);
+            });
+        })();
+
+        function pickOnlineGrid(set, idx) {
+            onlineGridSet = set; onlineGridIdx = idx;
+            document.querySelectorAll('[data-oset]').forEach(b => b.classList.toggle('active', b.dataset.oset === set && +b.dataset.oidx === idx));
+        }
+
+        // ═══════════════════════════════════════════
+        //  VIBRATION BUTTONS
+        // ═══════════════════════════════════════════
+        $('vib-toggle').addEventListener('change', () => { vibEnabled = $('vib-toggle').checked; syncVibBtn(); if (vibEnabled) vibrate([10]); });
+        $('hud-vib').addEventListener('click', () => { vibEnabled = !vibEnabled; $('vib-toggle').checked = vibEnabled; syncVibBtn(); if (vibEnabled) vibrate([10]); });
+        function syncVibBtn() { $('hud-vib').classList.toggle('vib-on', vibEnabled); $('hud-vib').title = vibEnabled ? 'Vibration ON' : 'Vibration OFF'; }
+
+        // ═══════════════════════════════════════════
+        //  BUTTON WIRING
+        // ═══════════════════════════════════════════
+        $('btn-start').onclick = startOfflineGame;
+        $('btn-menu').onclick = goMenu;
+        $('btn-again').onclick = () => { hide('screen-win'); onlineMode ? hostStartGame() : startOfflineGame(); };
+        $('btn-menu2').onclick = () => { hide('screen-win'); goMenu(); };
+
+        // ═══════════════════════════════════════════
+        //  OFFLINE GAME START
+        // ═══════════════════════════════════════════
+        function startOfflineGame() {
+            onlineMode = false;
+            const plist = [];
             for (let i = 0; i < numPlayers; i++) {
-                const el = document.getElementById(`pn-${i}`);
-                players.push({ name: el ? (el.value.trim() || `Player ${i + 1}`) : `Player ${i + 1}`, color: COLORS[i], eliminated: false });
+                const el = $(`pn-${i}`);
+                plist.push({ name: el ? (el.value.trim() || `Player ${i + 1}`) : `Player ${i + 1}`, color: COLORS[i], eliminated: false });
             }
             const gs = (gridSet === 'port' ? GRIDS_PORT : GRIDS_LAND)[gridIdx];
-            rows = gs.rows; cols = gs.cols;
+            launchGame(gs.rows, gs.cols, plist);
+        }
+
+        // ═══════════════════════════════════════════
+        //  COMMON GAME LAUNCH
+        // ═══════════════════════════════════════════
+        function launchGame(r, c, plist) {
+            rows = r; cols = c;
+            players = plist; numPlayers = players.length;
             currentPlayer = 0; moveCount = 0; animating = false; gameActive = true;
             board = Array.from({ length: rows }, () => Array.from({ length: cols }, () => ({ player: -1, orbs: 0 })));
             particles = []; cellFx = {}; transients = [];
             syncVibBtn();
-            hide('screen-setup'); show('screen-game');
+            showOnly('screen-game');
             buildChips(); buildGrid(); updateHUD();
             requestAnimationFrame(() => requestAnimationFrame(() => { sizeGrid(); resizeCanvas(); loopStart(); }));
         }
 
-        // ═══════════════════════════════════
-        //  GRID SIZING — fills available space
-        // ═══════════════════════════════════
+        // ═══════════════════════════════════════════
+        //  GRID SIZING
+        // ═══════════════════════════════════════════
         function sizeGrid() {
             const outer = document.querySelector('.grid-outer');
-            const availW = outer.clientWidth - 14;
-            const availH = outer.clientHeight - 14;
+            const availW = outer.clientWidth - 14, availH = outer.clientHeight - 14;
             const gapPx = 4, padPx = 6;
-
             const cellByW = Math.floor((availW - padPx * 2 - gapPx * (cols - 1)) / cols);
             const cellByH = Math.floor((availH - padPx * 2 - gapPx * (rows - 1)) / rows);
-            const cellSz = Math.max(Math.min(cellByW, cellByH), 50); // minimum 50px
-
+            const cellSz = Math.max(Math.min(cellByW, cellByH), 50);
             const gridW = cellSz * cols + gapPx * (cols - 1) + padPx * 2;
             const gridH = cellSz * rows + gapPx * (rows - 1) + padPx * 2;
-
-            const wrap = document.getElementById('grid-wrap');
-            wrap.style.width = gridW + 'px';
-            wrap.style.height = gridH + 'px';
-
-            const grid = document.getElementById('grid');
+            const wrap = $('grid-wrap');
+            wrap.style.width = gridW + 'px'; wrap.style.height = gridH + 'px';
+            const grid = $('grid');
             grid.style.gridTemplateColumns = `repeat(${cols},${cellSz}px)`;
             grid.style.gridTemplateRows = `repeat(${rows},${cellSz}px)`;
-            grid.style.width = (gridW - padPx * 2) + 'px';
-            grid.style.height = (gridH - padPx * 2) + 'px';
+            grid.style.width = (gridW - padPx * 2) + 'px'; grid.style.height = (gridH - padPx * 2) + 'px';
             resizeCanvas();
         }
-
         window.addEventListener('resize', () => { if (gameActive) { sizeGrid(); resizeCanvas(); } });
 
-        // ═══════════════════════════════════
+        // ═══════════════════════════════════════════
         //  GRID + HUD
-        // ═══════════════════════════════════
+        // ═══════════════════════════════════════════
         function buildGrid() {
-            const grid = document.getElementById('grid');
-            grid.innerHTML = '';
-            for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+            const grid = $('grid'); grid.innerHTML = '';
+            for (let r = 0; r < rows; r++)for (let c = 0; c < cols; c++) {
                 const cell = document.createElement('div');
                 cell.className = 'cell'; cell.dataset.r = r; cell.dataset.c = c;
                 cell.addEventListener('click', onCell);
@@ -1181,18 +1428,16 @@
         }
 
         function syncCells() {
-            for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+            for (let r = 0; r < rows; r++)for (let c = 0; c < cols; c++) {
                 const cell = document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
                 if (!cell) continue;
                 const d = board[r][c], m = maxOrbs(r, c);
                 if (d.orbs > 0) {
                     const col = players[d.player].color;
-                    cell.style.borderColor = col + '30';
-                    cell.style.background = col + '0b';
+                    cell.style.borderColor = col + '30'; cell.style.background = col + '0b';
                     setCellFx(r, c, d.orbs, m, col);
                 } else {
-                    cell.style.borderColor = '#111';
-                    cell.style.background = '#0a0a12';
+                    cell.style.borderColor = '#111'; cell.style.background = '#0a0a12';
                     setCellFx(r, c, 0, m, '#fff');
                 }
             }
@@ -1200,13 +1445,26 @@
 
         function updateHUD() {
             const p = players[currentPlayer];
-            document.getElementById('hud-dot').style.cssText = `background:${p.color};box-shadow:0 0 7px ${p.color}`;
-            document.getElementById('hud-name').textContent = p.name;
-            document.getElementById('hud-name').style.color = p.color;
+            $('hud-dot').style.cssText = `background:${p.color};box-shadow:0 0 7px ${p.color}`;
+            $('hud-name').textContent = p.name;
+            $('hud-name').style.color = p.color;
+            const badge = $('hud-badge');
+            if (onlineMode) {
+                badge.classList.remove('hidden');
+                if (currentPlayer === myPlayerIndex) {
+                    badge.textContent = 'YOUR TURN';
+                    badge.style.cssText = 'color:#5aad8f;background:#1a3028;padding:2px 7px;border-radius:4px;';
+                } else {
+                    badge.textContent = 'WAIT…';
+                    badge.style.cssText = 'color:#c9a25f;background:#2a2010;padding:2px 7px;border-radius:4px;';
+                }
+            } else {
+                badge.classList.add('hidden');
+            }
         }
 
         function buildChips() {
-            const bar = document.getElementById('chips-bar'); bar.innerHTML = '';
+            const bar = $('chips-bar'); bar.innerHTML = '';
             players.forEach((p, i) => {
                 const chip = document.createElement('div');
                 chip.id = `chip-${i}`;
@@ -1219,14 +1477,14 @@
         }
         function refreshChips() {
             players.forEach((p, i) => {
-                const chip = document.getElementById(`chip-${i}`); if (!chip) return;
+                const chip = $(`chip-${i}`); if (!chip) return;
                 chip.className = 'chip' + (i === currentPlayer ? ' active' : '') + (p.eliminated ? ' eliminated' : '');
             });
         }
 
-        // ═══════════════════════════════════
+        // ═══════════════════════════════════════════
         //  GAME LOGIC
-        // ═══════════════════════════════════
+        // ═══════════════════════════════════════════
         function maxOrbs(r, c) {
             const corner = (r === 0 || r === rows - 1) && (c === 0 || c === cols - 1);
             const edge = r === 0 || r === rows - 1 || c === 0 || c === cols - 1;
@@ -1234,24 +1492,32 @@
         }
 
         async function onCell(e) {
-            if (animating) return;
+            if (!gameActive) return;
             const r = +e.currentTarget.dataset.r, c = +e.currentTarget.dataset.c;
+
+            if (onlineMode) {
+                // Online: validate turn + send to server; server echoes game_state
+                if (animating) return;
+                if (currentPlayer !== myPlayerIndex) return;
+                const d = board[r][c];
+                if (d.player !== -1 && d.player !== currentPlayer) return;
+                wsSend({ type: 'move', roomCode: myRoomCode, playerId: myPlayerId, x: c, y: r });
+                return;
+            }
+
+            // Offline: run locally
+            if (animating) return;
             const d = board[r][c];
             if (d.player !== -1 && d.player !== currentPlayer) return;
 
             animating = true; moveCount++;
             board[r][c].player = currentPlayer; board[r][c].orbs++;
             addTransient('absorb', r, c, players[currentPlayer].color, .3);
-            vibrate([6]);  // soft tap feedback
+            vibrate([6]);
             syncCells();
-
             await doExplosions();
-
             if (moveCount >= numPlayers) { checkWin(); if (!gameActive) return; }
-
-            do { currentPlayer = (currentPlayer + 1) % players.length; }
-            while (players[currentPlayer].eliminated);
-
+            do { currentPlayer = (currentPlayer + 1) % players.length; } while (players[currentPlayer].eliminated);
             updateHUD(); refreshChips(); animating = false;
         }
 
@@ -1260,16 +1526,12 @@
         async function doExplosions() {
             while (true) {
                 const burst = [];
-                for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++)
+                for (let r = 0; r < rows; r++)for (let c = 0; c < cols; c++)
                     if (board[r][c].orbs > maxOrbs(r, c)) burst.push([r, c]);
                 if (!burst.length) break;
-
                 burst.forEach(([r, c]) => addTransient('preexplode', r, c, players[board[r][c].player].color, .22));
                 await sleep(220);
-
-                // Vibrate on each explosion wave
                 vibrate([12, 8, 12]);
-
                 burst.forEach(([r, c]) => {
                     const ep = board[r][c].player, col = players[ep].color;
                     explodeParticles(r, c, col);
@@ -1294,7 +1556,7 @@
             players.forEach((p, i) => {
                 if (p.eliminated) return;
                 let has = false;
-                for (let r = 0; r < rows && !has; r++) for (let c = 0; c < cols && !has; c++)
+                for (let r = 0; r < rows && !has; r++)for (let c = 0; c < cols && !has; c++)
                     if (board[r][c].player === i && board[r][c].orbs > 0) has = true;
                 if (!has) p.eliminated = true;
             });
@@ -1308,22 +1570,208 @@
 
         function showWin(player) {
             gameActive = false;
-            vibrate([30, 50, 80, 50, 200]);  // celebratory rumble
+            vibrate([30, 50, 80, 50, 200]);
             const cx = canvas.width / 2, cy = canvas.height / 2;
             for (let i = 0; i < 45; i++) {
                 const a = Math.random() * Math.PI * 2, sp = 50 + Math.random() * 150;
-                particles.push({
-                    x: cx, y: cy, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
-                    size: 3 + Math.random() * 7, color: player.color, alpha: .85, life: .6 + Math.random() * .9, t: 0
-                });
+                particles.push({ x: cx, y: cy, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, size: 3 + Math.random() * 7, color: player.color, alpha: .85, life: .6 + Math.random() * .9, t: 0 });
             }
             setTimeout(() => {
-                document.getElementById('win-title').textContent = player.name + ' wins!';
-                document.getElementById('win-title').style.color = player.color;
-                document.getElementById('win-sub').textContent = 'We have a Champion';
+                $('win-title').textContent = player.name + ' wins!';
+                $('win-title').style.color = player.color;
+                $('win-sub').textContent = 'We have a Champion';
                 show('screen-win');
+                // In online mode only host can restart
+                if (onlineMode && !amHost) hide('btn-again');
+                else show('btn-again');
             }, 650);
         }
+
+        // ═══════════════════════════════════════════
+        //  WEBSOCKET LAYER
+        // ═══════════════════════════════════════════
+        function connectWs(url) {
+            return new Promise((resolve, reject) => {
+                if (ws && ws.readyState === WebSocket.OPEN) { resolve(); return; }
+                try { ws = new WebSocket(url); } catch (e) { reject(e); return; }
+                ws.onopen = () => resolve();
+                ws.onerror = () => reject(new Error('WebSocket connection failed'));
+                ws.onclose = () => {
+                    if (onlineMode) {
+                        alert('Disconnected from server.');
+                        disconnectWs();
+                        showOnly('screen-mode');
+                    }
+                };
+                ws.onmessage = ev => handleMsg(JSON.parse(ev.data));
+            });
+        }
+
+        function wsSend(obj) { if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(obj)); }
+
+        function disconnectWs() {
+            onlineMode = false; myRoomCode = null; myPlayerId = null; myPlayerIndex = -1; amHost = false; onlinePlayers = [];
+            if (ws) { ws.onclose = null; ws.close(); ws = null; }
+        }
+
+        // ── Host actions ──────────────────────────
+        async function doCreateRoom() {
+            const url = $('serverUrl').value.trim();
+            try {
+                await connectWs(url);
+                myPlayerId = 'p_' + Math.random().toString(36).slice(2, 10);
+                const gs = (onlineGridSet === 'port' ? GRIDS_PORT : GRIDS_LAND)[onlineGridIdx];
+                wsSend({ type: 'create_room', playerId: myPlayerId, gridRows: gs.rows, gridCols: gs.cols });
+            } catch { alert('Could not connect to server.\nMake sure it is running: npm start'); }
+        }
+
+        function hostStartGame() {
+            if (!amHost || onlinePlayers.length < 2) return;
+            wsSend({ type: 'start_game', roomCode: myRoomCode, playerId: myPlayerId });
+        }
+
+        // ── Guest actions ─────────────────────────
+        async function doJoinRoom() {
+            const url = $('serverUrl').value.trim();
+            const code = $('roomCodeInput').value.trim().toUpperCase();
+            if (!code || code.length !== 6) { alert('Enter a valid 6-character room code.'); return; }
+            try {
+                await connectWs(url);
+                myPlayerId = 'p_' + Math.random().toString(36).slice(2, 10);
+                wsSend({ type: 'join_room', roomCode: code, playerId: myPlayerId });
+            } catch { alert('Could not connect to server.\nMake sure it is running: npm start'); }
+        }
+
+        function leaveRoom() {
+            wsSend({ type: 'leave_room', roomCode: myRoomCode, playerId: myPlayerId });
+            disconnectWs();
+            showOnly('screen-mode');
+        }
+
+        // ── Incoming messages ────────────────────
+        function handleMsg(data) {
+            switch (data.type) {
+
+                case 'room_created':
+                    myRoomCode = data.roomCode; amHost = true; onlineMode = true;
+                    onlinePlayers = [myPlayerId]; myPlayerIndex = 0;
+                    showPanel('op-wait');
+                    $('roomCodeDisplay').textContent = data.roomCode;
+                    renderLobby(onlinePlayers);
+                    break;
+
+                case 'room_joined':
+                    myRoomCode = data.roomCode; amHost = false; onlineMode = true;
+                    onlinePlayers = data.players;
+                    myPlayerIndex = data.players.indexOf(myPlayerId);
+                    showPanel('op-wait');
+                    $('roomCodeDisplay').textContent = data.roomCode;
+                    renderLobby(onlinePlayers);
+                    // Guests can't start
+                    const sb = $('startGameBtn');
+                    sb.disabled = true; sb.textContent = 'Waiting for host to start…';
+                    break;
+
+                case 'player_joined':
+                    onlinePlayers = data.players;
+                    myPlayerIndex = data.players.indexOf(myPlayerId);
+                    renderLobby(onlinePlayers);
+                    break;
+
+                case 'player_left':
+                    onlinePlayers = data.players;
+                    renderLobby(onlinePlayers);
+                    if (gameActive) alert('A player disconnected.');
+                    break;
+
+                case 'game_start':
+                    onlinePlayers = data.players;
+                    myPlayerIndex = data.players.indexOf(myPlayerId);
+                    hide('screen-win');
+                    beginOnlineGame(data);
+                    break;
+
+                case 'game_state':
+                    applyState(data.state);
+                    break;
+
+                case 'error':
+                    alert('Server error: ' + data.message);
+                    break;
+            }
+        }
+
+        function renderLobby(list) {
+            const div = $('playerList'); if (!div) return;
+            div.innerHTML = list.map((pid, i) => `
+        <div class="player-list-item" style="border-color:${COLORS[i]}55">
+            <div style="width:10px;height:10px;border-radius:50%;background:${COLORS[i]};flex-shrink:0;"></div>
+            <div>Player ${i + 1}${pid === myPlayerId ? ' <strong>(You)</strong>' : ''}</div>
+        </div>`).join('');
+            const btn = $('startGameBtn');
+            if (amHost) {
+                btn.disabled = list.length < 2;
+                btn.textContent = list.length >= 2
+                    ? `▶ Start Game (${list.length} players)`
+                    : `Start Game (Need 2+ players)`;
+            }
+            const wt = $('waitingText');
+            wt.textContent = list.length < 2 ? 'Waiting for players…' : `${list.length} player${list.length > 1 ? 's' : ''} ready`;
+        }
+
+        // ═══════════════════════════════════════════
+        //  ONLINE GAME START  (called when server fires game_start)
+        // ═══════════════════════════════════════════
+        function beginOnlineGame(data) {
+            // Build player list from player indices — names are generic in online mode
+            const plist = data.players.map((pid, i) => ({
+                name: `Player ${i + 1}`,
+                color: COLORS[i],
+                eliminated: false
+            }));
+            launchGame(data.gridRows, data.gridCols, plist);
+        }
+
+        // ═══════════════════════════════════════════
+        //  APPLY STATE FROM SERVER
+        //  Server sends grid[r][c] = {player, count}
+        //  Client uses board[r][c] = {player, orbs}
+        // ═══════════════════════════════════════════
+        function applyState(state) {
+            // 1. Copy server grid into our board
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const sv = state.grid[r][c];
+                    board[r][c].player = sv.player;
+                    board[r][c].orbs = sv.count;  // field name differs!
+                }
+            }
+
+            // 2. Update game meta
+            state.eliminated.forEach((elim, i) => { if (players[i]) players[i].eliminated = elim; });
+            currentPlayer = state.turn;
+            moveCount = state.moveCount !== undefined ? state.moveCount : moveCount + 1;
+
+            // 3. Trigger some visual feedback for the explosion that just happened
+            //    We don't know exactly which cells exploded, so add shockwaves for
+            //    cells that currently have orbs (they may have just received from explode)
+            //    — simple heuristic: just re-render; the canvas loop handles orb animation
+            syncCells();
+            updateHUD();
+            refreshChips();
+            animating = false;
+
+            // 4. Win check
+            if (state.gameOver) {
+                gameActive = false;
+                if (state.winner >= 0 && players[state.winner]) showWin(players[state.winner]);
+            }
+        }
+
+        // ═══════════════════════════════════════════
+        //  INITIAL SCREEN
+        // ═══════════════════════════════════════════
+        show('screen-mode');
     </script>
 </body>
 

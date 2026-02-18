@@ -1,0 +1,20 @@
+{
+  "name": "chain-reaction-multiplayer-server",
+  "version": "1.0.0",
+  "description": "WebSocket server for Chain Reaction multiplayer game",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ws": "^8.19.0"
+  },
+  "keywords": [
+    "websocket",
+    "multiplayer",
+    "game"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
