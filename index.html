@@ -13,10 +13,12 @@
         rel="stylesheet">
     <style>
         :root {
-            --bg: #060609;
-            --surface: #0e0e18;
-            --border: #1c1c30;
-            --dim: #44445a;
+            --bg: #0c111b;
+            --surface: #161c27;
+            --border: #202938;
+            --dim: #6b7a90;
+            --text: #d4dce6;
+            --text-soft: #8fa0b8;
             --st: env(safe-area-inset-top, 0px);
             --sb: env(safe-area-inset-bottom, 0px);
         }
@@ -34,20 +36,12 @@
             height: 100%;
             overflow: hidden;
             background: var(--bg);
-            color: #fff;
+            color: var(--text);
             font-family: 'Rajdhani', sans-serif;
             touch-action: manipulation;
         }
 
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 0;
-            background: radial-gradient(ellipse 80% 60% at 15% 40%, #0d0d28, transparent 70%),
-                radial-gradient(ellipse 60% 50% at 85% 60%, #12080f, transparent 70%);
-        }
+        /* No aggressive body::before gradient — just clean flat background */
 
         /* ── SCREENS ── */
         .screen {
@@ -83,18 +77,15 @@
 
         .setup-header h1 {
             font-family: 'Orbitron', monospace;
-            font-weight: 900;
-            font-size: clamp(1.3rem, 6vw, 2rem);
-            letter-spacing: .14em;
-            background: linear-gradient(90deg, #ff006e, #8338ec, #3a86ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-weight: 700;
+            font-size: clamp(1.2rem, 5.5vw, 1.7rem);
+            letter-spacing: .1em;
+            color: #e2e8f0;
         }
 
         .setup-header p {
             font-size: .6rem;
-            letter-spacing: .25em;
+            letter-spacing: .2em;
             color: var(--dim);
             text-transform: uppercase;
             margin-top: 3px;
@@ -105,17 +96,18 @@
             max-width: 440px;
             background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 18px;
+            border-radius: 16px;
             padding: 18px 16px;
             display: flex;
             flex-direction: column;
             gap: 16px;
             margin: 0 auto;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
         }
 
         .field-label {
             font-size: .6rem;
-            letter-spacing: .2em;
+            letter-spacing: .15em;
             color: var(--dim);
             text-transform: uppercase;
             margin-bottom: 7px;
@@ -131,14 +123,14 @@
         .pc-btn {
             flex: 1;
             min-height: 42px;
-            border-radius: 9px;
-            border: 1.5px solid #1e1e30;
-            background: #0c0c14;
-            color: #444;
+            border-radius: 8px;
+            border: 1.5px solid var(--border);
+            background: var(--bg);
+            color: var(--dim);
             font-family: 'Orbitron', monospace;
             font-size: .85rem;
             cursor: pointer;
-            transition: all .15s;
+            transition: all .2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -146,9 +138,8 @@
 
         .pc-btn.active {
             border-color: currentColor;
-            color: #fff;
-            box-shadow: 0 0 12px currentColor;
-            background: #14141f;
+            color: var(--text);
+            background: var(--surface);
         }
 
         /* Player names */
@@ -162,11 +153,16 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            background: #0c0c14;
-            border: 1px solid #1a1a28;
-            border-radius: 9px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
             padding: 0 12px;
             height: 42px;
+            transition: border-color .2s ease;
+        }
+
+        .pname-row:focus-within {
+            border-color: #4a90d9;
         }
 
         .pname-dot {
@@ -181,17 +177,17 @@
             background: transparent;
             border: none;
             outline: none;
-            color: #fff;
+            color: var(--text);
             font-family: 'Rajdhani', sans-serif;
             font-size: .95rem;
             font-weight: 600;
         }
 
-        /* Grid size — 2-row layout: landscape top, portrait bottom */
+        /* Grid size */
         .gs-section-label {
             font-size: .55rem;
-            letter-spacing: .18em;
-            color: #2a2a40;
+            letter-spacing: .15em;
+            color: #3a4a5c;
             text-transform: uppercase;
             text-align: center;
             margin: 2px 0;
@@ -206,14 +202,14 @@
         .gs-btn {
             flex: 1;
             padding: 8px 4px;
-            border-radius: 9px;
-            border: 1.5px solid #1e1e30;
-            background: #0c0c14;
-            color: #444;
+            border-radius: 8px;
+            border: 1.5px solid var(--border);
+            background: var(--bg);
+            color: var(--dim);
             font-family: 'Rajdhani', sans-serif;
             font-size: .82rem;
             cursor: pointer;
-            transition: all .15s;
+            transition: all .2s ease;
             text-align: center;
             font-weight: 700;
             min-height: 48px;
@@ -225,10 +221,9 @@
         }
 
         .gs-btn.active {
-            border-color: #8338ec;
-            color: #fff;
-            box-shadow: 0 0 10px #8338ec55;
-            background: #13101e;
+            border-color: #4a90d9;
+            color: var(--text);
+            background: var(--surface);
         }
 
         .gs-btn .gs-sub {
@@ -239,22 +234,22 @@
         }
 
         .gs-btn.active .gs-sub {
-            color: #8338ec99;
+            color: #7ab3e0;
         }
 
-        /* portrait grids get a subtle tint */
+        /* portrait variant */
         .gs-btn.portrait {
-            border-color: #1e2a1e;
+            border-color: var(--border);
         }
 
         .gs-btn.portrait.active {
-            border-color: #06d6a0;
-            box-shadow: 0 0 10px #06d6a055;
-            background: #0e1a14;
+            border-color: #5aad8f;
+            color: var(--text);
+            background: var(--surface);
         }
 
         .gs-btn.portrait.active .gs-sub {
-            color: #06d6a099;
+            color: #7ec8b0;
         }
 
         /* Settings row */
@@ -262,9 +257,9 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: #0c0c14;
-            border: 1px solid #1a1a28;
-            border-radius: 9px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
             padding: 0 14px;
             height: 44px;
         }
@@ -275,11 +270,11 @@
             gap: 8px;
             font-size: .85rem;
             font-weight: 600;
-            color: #aaa;
+            color: var(--text-soft);
         }
 
         .settings-label svg {
-            opacity: .6;
+            opacity: .5;
         }
 
         .toggle-wrap {
@@ -299,10 +294,10 @@
             position: absolute;
             inset: 0;
             border-radius: 12px;
-            background: #1a1a28;
-            border: 1px solid #2a2a3a;
+            background: var(--border);
+            border: 1px solid #475569;
             cursor: pointer;
-            transition: background .2s, border-color .2s;
+            transition: background .25s ease, border-color .25s ease;
         }
 
         .toggle-thumb {
@@ -312,40 +307,42 @@
             width: 18px;
             height: 18px;
             border-radius: 50%;
-            background: #444;
-            transition: transform .2s, background .2s;
+            background: #64748b;
+            transition: transform .25s ease, background .25s ease;
         }
 
         .toggle-wrap input:checked~.toggle-track {
-            background: #06d6a022;
-            border-color: #06d6a0;
+            background: #1e3a2f;
+            border-color: #5aad8f;
         }
 
         .toggle-wrap input:checked~.toggle-track .toggle-thumb {
             transform: translateX(20px);
-            background: #06d6a0;
+            background: #5aad8f;
         }
 
         /* Start button */
         #btn-start {
             width: 100%;
             padding: 14px;
-            border-radius: 12px;
+            border-radius: 10px;
             border: none;
-            background: linear-gradient(135deg, #ff006e, #8338ec);
-            color: #fff;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: var(--text);
             font-family: 'Orbitron', monospace;
             font-size: .82rem;
             font-weight: 700;
-            letter-spacing: .12em;
+            letter-spacing: .1em;
             cursor: pointer;
             text-transform: uppercase;
-            box-shadow: 0 4px 20px #8338ec44;
+            box-shadow: 0 2px 12px rgba(37, 99, 235, 0.35);
             min-height: 50px;
+            transition: opacity .2s ease, transform .15s ease;
         }
 
         #btn-start:active {
             transform: scale(.97);
+            opacity: .9;
         }
 
         /* GitHub footer */
@@ -362,30 +359,31 @@
             display: flex;
             align-items: center;
             gap: 7px;
-            color: #33334a;
+            color: var(--dim);
             font-size: .7rem;
             letter-spacing: .08em;
             text-decoration: none;
-            transition: color .2s;
-            padding: 6px 12px;
+            transition: color .25s ease;
+            padding: 6px 14px;
             border-radius: 20px;
-            border: 1px solid #1a1a28;
+            border: 1px solid var(--border);
         }
 
         .github-link:hover,
         .github-link:active {
-            color: #8338ec;
-            border-color: #8338ec44;
+            color: #7ab3e0;
+            border-color: #4a90d955;
         }
 
         .github-link svg {
             flex-shrink: 0;
-            transition: fill .2s;
+            fill: var(--dim);
+            transition: fill .25s ease;
         }
 
         .github-link:hover svg,
         .github-link:active svg {
-            fill: #8338ec;
+            fill: #7ab3e0;
         }
 
         /* ══════════════════════════════════════
@@ -393,7 +391,7 @@
 ══════════════════════════════════════ */
         #screen-game {
             justify-content: flex-start;
-            padding: max(var(--st), 6px) 8px max(var(--sb), 6px);
+            padding: max(var(--st), 4px) 8px max(var(--sb), 4px);
             gap: 0;
             overflow: hidden;
         }
@@ -403,8 +401,8 @@
             max-width: 520px;
             display: flex;
             align-items: center;
-            gap: 7px;
-            padding: 5px 0;
+            gap: 6px;
+            padding: 4px 0;
             flex-shrink: 0;
         }
 
@@ -412,17 +410,17 @@
             flex: 1;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 7px;
             background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 9px;
-            padding: 6px 11px;
+            border-radius: 8px;
+            padding: 5px 10px;
             min-width: 0;
         }
 
         .hud-dot {
-            width: 9px;
-            height: 9px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             flex-shrink: 0;
         }
@@ -432,20 +430,21 @@
         }
 
         .hud-lbl {
-            font-size: .5rem;
-            letter-spacing: .15em;
+            font-size: .48rem;
+            letter-spacing: .12em;
             color: var(--dim);
             text-transform: uppercase;
         }
 
         .hud-name {
             font-family: 'Orbitron', monospace;
-            font-size: .68rem;
+            font-size: .65rem;
             font-weight: 700;
-            letter-spacing: .04em;
+            letter-spacing: .03em;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            color: var(--text);
         }
 
         .hud-actions {
@@ -455,29 +454,30 @@
         }
 
         .hud-btn {
-            padding: 6px 11px;
-            border-radius: 9px;
-            border: 1px solid #1e1e30;
-            background: #0c0c14;
-            color: #555;
+            padding: 5px 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--dim);
             font-size: .75rem;
             cursor: pointer;
-            min-height: 34px;
+            min-height: 32px;
             display: flex;
             align-items: center;
             gap: 5px;
             font-family: 'Rajdhani', sans-serif;
             font-weight: 600;
-            transition: color .15s;
+            transition: color .2s ease, border-color .2s ease;
             flex-shrink: 0;
         }
 
         .hud-btn:active {
-            color: #fff;
+            color: var(--text);
         }
 
         .hud-btn.vib-on {
-            color: #06d6a0;
+            color: #5aad8f;
+            border-color: #5aad8f55;
         }
 
         .chips-bar {
@@ -502,22 +502,23 @@
             gap: 4px;
             background: var(--surface);
             border: 1.5px solid var(--border);
-            border-radius: 18px;
+            border-radius: 14px;
             padding: 3px 9px;
-            font-size: .62rem;
-            letter-spacing: .04em;
+            font-size: .6rem;
+            letter-spacing: .03em;
             white-space: nowrap;
-            transition: all .25s;
+            transition: border-color .25s ease, box-shadow .25s ease;
             flex-shrink: 0;
+            color: var(--text-soft);
         }
 
         .chip.active {
             border-color: currentColor;
-            box-shadow: 0 0 7px currentColor;
+            color: var(--text);
         }
 
         .chip.eliminated {
-            opacity: .18;
+            opacity: .2;
             text-decoration: line-through;
         }
 
@@ -543,27 +544,31 @@
             position: relative;
             background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 5px;
+            border-radius: 14px;
+            padding: 6px;
             touch-action: none;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.28);
         }
 
         #grid {
             display: grid;
-            gap: 3px;
+            gap: 4px;
         }
 
         .cell {
-            background: #0a0a12;
-            border-radius: 4px;
-            border: 1px solid #111;
+            background: #0e1420;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
             cursor: pointer;
             position: relative;
-            transition: border-color .15s, background .15s;
+            transition: border-color .25s ease, background .25s ease;
+            min-width: 50px;
+            min-height: 50px;
         }
 
         .cell:active {
             transform: scale(.88);
+            transition: transform .08s ease;
         }
 
         #anim-canvas {
@@ -572,7 +577,7 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            border-radius: 12px;
+            border-radius: 14px;
             z-index: 10;
         }
 
@@ -582,7 +587,7 @@
         #screen-win {
             position: fixed;
             inset: 0;
-            background: rgba(6, 6, 9, .93);
+            background: rgba(12, 17, 27, .96);
             z-index: 200;
             display: flex;
             flex-direction: column;
@@ -598,35 +603,36 @@
         }
 
         .win-emoji {
-            font-size: clamp(3rem, 14vw, 5rem);
+            font-size: clamp(2.8rem, 13vw, 4.5rem);
             line-height: 1;
         }
 
         .win-title {
             font-family: 'Orbitron', monospace;
-            font-size: clamp(1.5rem, 7vw, 2.6rem);
-            font-weight: 900;
-            animation: glowPulse 1.4s ease-in-out infinite;
+            font-size: clamp(1.4rem, 6.5vw, 2.4rem);
+            font-weight: 700;
+            animation: gentlePulse 2s ease-in-out infinite;
+            color: var(--text);
         }
 
-        @keyframes glowPulse {
+        @keyframes gentlePulse {
 
             0%,
             100% {
-                text-shadow: 0 0 16px currentColor, 0 0 32px currentColor;
+                opacity: 1;
             }
 
             50% {
-                text-shadow: 0 0 32px currentColor, 0 0 64px currentColor;
+                opacity: .75;
             }
         }
 
         .win-sub {
-            font-family: 'Orbitron', monospace;
-            font-size: clamp(.8rem, 3.5vw, 1rem);
-            color: #fff;
-            opacity: .55;
-            letter-spacing: .16em;
+            font-size: clamp(.8rem, 3.2vw, .95rem);
+            color: var(--text-soft);
+            letter-spacing: .12em;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
         }
 
         .win-actions {
@@ -639,25 +645,27 @@
 
         .win-btn {
             padding: 12px 24px;
-            border-radius: 11px;
-            border: 1.5px solid #2a2a3a;
-            background: #0e0e18;
-            color: #fff;
+            border-radius: 10px;
+            border: 1.5px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
             font-family: 'Orbitron', monospace;
-            font-size: .7rem;
+            font-size: .68rem;
             cursor: pointer;
-            letter-spacing: .1em;
+            letter-spacing: .08em;
             text-transform: uppercase;
             min-height: 46px;
+            transition: border-color .2s ease, opacity .2s ease;
         }
 
         .win-btn.primary {
-            background: linear-gradient(135deg, #ff006e, #8338ec);
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
             border-color: transparent;
         }
 
         .win-btn:active {
             transform: scale(.96);
+            opacity: .85;
         }
     </style>
 </head>
@@ -715,7 +723,7 @@
         <!-- GitHub footer -->
         <div class="setup-footer">
             <a id="github-link" href="https://github.com/joy-boy56" class="github-link"
-                onclick="window.open('https://github.com/joy-boy56','_blank');return false;">
+                onclick="window.open('https://github.com/YOUR_USERNAME','_blank');return false;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="#33334a">
                     <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 
         0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 
@@ -778,7 +786,16 @@
         // ═══════════════════════════════════
         //  CONFIG
         // ═══════════════════════════════════
-        const COLORS = ['#ff006e', '#3a86ff', '#06d6a0', '#ffbe0b', '#8338ec', '#fb5607', '#00f5ff', '#ff70a6'];
+        const COLORS = [
+            '#d96b7a', // dusty rose
+            '#5f8fd6', // steel blue
+            '#5fa985', // sage green
+            '#c9a25f', // warm sand
+            '#9b84c9', // soft violet
+            '#c87f63', // terracotta
+            '#5fa3a8', // muted teal
+            '#b884a8', // dusty mauve
+        ];
 
         const GRIDS_LAND = [
             { label: '5×4', sub: 'Quick', rows: 4, cols: 5 },
@@ -850,23 +867,26 @@
                 const g = cellGeom(r, c), rgb = h2r(fx.color), max = fx.max;
                 const ratio = (fx.orbs - 1) / max, critical = fx.orbs >= max;
 
-                // Ambient glow
-                const ga = 0.04 + ratio * 0.18 + (critical ? Math.abs(Math.sin(fx.t * 16)) * 0.18 : 0);
-                const gr = g.w * (0.7 + ratio * 0.6);
+                // Ambient glow — reduced alpha ~35% from previous
+                const ga = 0.02 + ratio * 0.07 + (critical ? Math.abs(Math.sin(fx.t * 10)) * 0.05 : 0);
+                const gr = g.w * (0.50 + ratio * 0.35);
                 const grd = ctx.createRadialGradient(g.x, g.y, 0, g.x, g.y, gr);
                 grd.addColorStop(0, `rgba(${rgb.r},${rgb.g},${rgb.b},${ga})`);
                 grd.addColorStop(1, `rgba(${rgb.r},${rgb.g},${rgb.b},0)`);
                 ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(g.x, g.y, gr, 0, Math.PI * 2); ctx.fill();
 
-                const shakeMag = critical ? g.w * 0.14 * Math.abs(Math.sin(fx.t * 38)) : g.w * 0.03 * ratio * Math.sin(fx.t * 12);
+                // Shake: reduced amplitude ~30%
+                const shakeMag = critical ? g.w * 0.05 * Math.abs(Math.sin(fx.t * 18)) : g.w * 0.015 * ratio * Math.sin(fx.t * 7);
                 drawOrbs(g, fx.orbs, fx.color, shakeMag, ratio, fx.t, critical);
 
                 if (critical) {
-                    const rp = Math.sin(fx.t * 13) * .5 + .5;
-                    ctx.strokeStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},${.55 + rp * .45})`;
-                    ctx.lineWidth = 1.5 + rp * 1.5;
-                    ctx.beginPath(); ctx.arc(g.x, g.y, g.w * .46 * (.88 + rp * .12), 0, Math.PI * 2); ctx.stroke();
-                    if (Math.random() < .35) addSpark(g.x, g.y, g.w * .28, fx.color);
+                    const rp = Math.sin(fx.t * 9) * .5 + .5;
+                    // Critical ring: alpha reduced ~35%
+                    ctx.strokeStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},${.18 + rp * .2})`;
+                    ctx.lineWidth = 0.8 + rp * 0.7;
+                    ctx.beginPath(); ctx.arc(g.x, g.y, g.w * .46 * (.9 + rp * .08), 0, Math.PI * 2); ctx.stroke();
+                    // Sparks: reduced to 7% chance (was 15%)
+                    if (Math.random() < .07) addSpark(g.x, g.y, g.w * .18, fx.color);
                 }
             }
 
@@ -877,74 +897,81 @@
                 const [r, c] = fx.cell;
                 const g = cellGeom(r, c), rgb = h2r(fx.color);
                 if (fx.type === 'shockwave') {
-                    const e = 1 - Math.pow(1 - p, 3), r1 = g.w * 3.5 * e;
-                    ctx.strokeStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},${(1 - e) * .9})`;
-                    ctx.lineWidth = 3 * (1 - e) + .5;
+                    const e = 1 - Math.pow(1 - p, 3), r1 = g.w * 2.5 * e;
+                    // alpha reduced ~35%: was 0.55 → 0.36
+                    ctx.strokeStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},${(1 - e) * .36})`;
+                    ctx.lineWidth = 1.5 * (1 - e) + .4;
                     ctx.beginPath(); ctx.arc(g.x, g.y, r1, 0, Math.PI * 2); ctx.stroke();
-                    if (p > .2) {
-                        const r2 = g.w * 3.5 * (e - .2) * 1.25;
-                        ctx.strokeStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},${(1 - e) * .3})`;
-                        ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(g.x, g.y, r2, 0, Math.PI * 2); ctx.stroke();
+                    if (p > .3) {
+                        const r2 = g.w * 2.5 * (e - .3) * 1.15;
+                        ctx.strokeStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},${(1 - e) * .11})`;
+                        ctx.lineWidth = 0.8; ctx.beginPath(); ctx.arc(g.x, g.y, r2, 0, Math.PI * 2); ctx.stroke();
                     }
                 } else if (fx.type === 'absorb') {
-                    const e = Math.sin(p * Math.PI), r1 = g.w * .9 * e, a = e * .9;
+                    const e = Math.sin(p * Math.PI), r1 = g.w * .65 * e;
+                    // alpha reduced ~35%: was 0.55 → 0.36
+                    const a = e * .36;
                     const gr = ctx.createRadialGradient(g.x, g.y, 0, g.x, g.y, r1);
-                    gr.addColorStop(0, `rgba(255,255,255,${a * .9})`);
-                    gr.addColorStop(.3, `rgba(${rgb.r},${rgb.g},${rgb.b},${a})`);
+                    gr.addColorStop(0, `rgba(255,255,255,${a * .5})`);
+                    gr.addColorStop(.35, `rgba(${rgb.r},${rgb.g},${rgb.b},${a})`);
                     gr.addColorStop(1, `rgba(${rgb.r},${rgb.g},${rgb.b},0)`);
                     ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(g.x, g.y, r1, 0, Math.PI * 2); ctx.fill();
                 } else if (fx.type === 'preexplode') {
-                    const st = Math.abs(Math.sin(fx.t * 55)), r1 = g.w * (.5 + p * .9);
-                    const a = (.45 + st * .55) * (1 - p * .25);
+                    const st = Math.abs(Math.sin(fx.t * 30)), r1 = g.w * (.4 + p * .6);
+                    // alpha reduced ~35%: was (.25+st*.3) → (.16+st*.2)
+                    const a = (.16 + st * .2) * (1 - p * .2);
                     const gr = ctx.createRadialGradient(g.x, g.y, 0, g.x, g.y, r1);
-                    gr.addColorStop(0, `rgba(255,255,255,${a})`);
-                    gr.addColorStop(.2, `rgba(${rgb.r},${rgb.g},${rgb.b},${a * .9})`);
+                    gr.addColorStop(0, `rgba(255,255,255,${a * .55})`);
+                    gr.addColorStop(.3, `rgba(${rgb.r},${rgb.g},${rgb.b},${a})`);
                     gr.addColorStop(1, `rgba(${rgb.r},${rgb.g},${rgb.b},0)`);
                     ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(g.x, g.y, r1, 0, Math.PI * 2); ctx.fill();
-                    ctx.strokeStyle = `rgba(255,255,255,${st * .75})`; ctx.lineWidth = 2;
-                    ctx.beginPath(); ctx.arc(g.x, g.y, g.w * .44, 0, Math.PI * 2); ctx.stroke();
+                    ctx.strokeStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},${st * .25})`; ctx.lineWidth = 1;
+                    ctx.beginPath(); ctx.arc(g.x, g.y, g.w * .4, 0, Math.PI * 2); ctx.stroke();
                 }
                 return p < 1;
             });
 
-            // 3. Particles
+            // 3. Particles — alpha*.7 → *.45, glow radius 2 → 1.6
             particles = particles.filter(p => {
                 p.t += dt; if (p.t >= p.life) return false;
                 const prog = p.t / p.life;
                 p.x += p.vx * dt; p.y += p.vy * dt; p.vx *= (1 - 3.5 * dt); p.vy *= (1 - 3.5 * dt);
-                const alpha = (1 - prog) * p.alpha, size = p.size * (1 - prog * .6);
+                const alpha = (1 - prog) * p.alpha * .45, size = p.size * (1 - prog * .6);
                 const rgb = h2r(p.color);
-                const gr = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, size * 3.2);
-                gr.addColorStop(0, `rgba(${rgb.r},${rgb.g},${rgb.b},${alpha * .85})`);
+                const gr = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, size * 1.6);
+                gr.addColorStop(0, `rgba(${rgb.r},${rgb.g},${rgb.b},${alpha})`);
                 gr.addColorStop(1, `rgba(${rgb.r},${rgb.g},${rgb.b},0)`);
-                ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(p.x, p.y, size * 3.2, 0, Math.PI * 2); ctx.fill();
-                ctx.fillStyle = `rgba(255,255,255,${alpha})`; ctx.beginPath(); ctx.arc(p.x, p.y, size * .55, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(p.x, p.y, size * 1.6, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = `rgba(255,255,255,${alpha * .45})`; ctx.beginPath(); ctx.arc(p.x, p.y, size * .35, 0, Math.PI * 2); ctx.fill();
                 return true;
             });
         }
 
         function drawOrbs(g, count, color, shake, tension, t, critical) {
-            const rgb = h2r(color), orbR = Math.max(g.w * .138, 4);
+            const rgb = h2r(color), orbR = Math.max(g.w * .20, 6); // larger orb radius
             const layouts = [[[0, 0]], [[-1, 0], [1, 0]], [[0, -1], [-.9, .75], [.9, .75]], [[-.9, -.9], [.9, -.9], [-.9, .9], [.9, .9]]];
             const layout = layouts[Math.min(count, 4) - 1];
             layout.forEach((off, i) => {
-                const phase = t * (critical ? 14 : 2.5 + tension * 7) + i * 1.35;
-                const breathe = Math.sin(phase) * orbR * (critical ? .28 : .07 + tension * .1);
-                const sx = shake * Math.sin(t * 32 + i * 2.4 + .8), sy = shake * Math.cos(t * 32 + i * 2 + 1.2);
-                const ox = g.x + off[0] * orbR * 1.3 + sx, oy = g.y + off[1] * orbR * 1.3 + sy, r = orbR + breathe;
-                const coronaR = r * (1.9 + tension * 1.6 + (critical ? Math.abs(Math.sin(t * 15 + i)) * 1.4 : 0));
-                const coronaA = .22 + tension * .48 + (critical ? Math.abs(Math.sin(t * 13 + i)) * .4 : 0);
-                const cg = ctx.createRadialGradient(ox, oy, r * .3, ox, oy, coronaR);
+                const phase = t * (critical ? 8 : 1.8 + tension * 4) + i * 1.2;
+                const breathe = Math.sin(phase) * orbR * (critical ? .12 : .04 + tension * .06);
+                const sx = shake * Math.sin(t * 22 + i * 2 + .8), sy = shake * Math.cos(t * 22 + i * 1.8 + 1.2);
+                const ox = g.x + off[0] * orbR * 1.35 + sx, oy = g.y + off[1] * orbR * 1.35 + sy, r = orbR + breathe;
+                // Subtle corona — alpha reduced ~35%
+                const coronaR = r * (1.35 + tension * .7 + (critical ? Math.abs(Math.sin(t * 9 + i)) * .45 : 0));
+                const coronaA = .08 + tension * .13 + (critical ? Math.abs(Math.sin(t * 8 + i)) * .10 : 0);
+                const cg = ctx.createRadialGradient(ox, oy, r * .4, ox, oy, coronaR);
                 cg.addColorStop(0, `rgba(${rgb.r},${rgb.g},${rgb.b},${coronaA})`);
                 cg.addColorStop(1, `rgba(${rgb.r},${rgb.g},${rgb.b},0)`);
                 ctx.fillStyle = cg; ctx.beginPath(); ctx.arc(ox, oy, coronaR, 0, Math.PI * 2); ctx.fill();
-                const bg = ctx.createRadialGradient(ox - r * .35, oy - r * .35, r * .03, ox, oy, r);
-                bg.addColorStop(0, 'rgba(255,255,255,0.95)');
-                bg.addColorStop(.25, `rgba(${rgb.r},${rgb.g},${rgb.b},0.95)`);
-                bg.addColorStop(.7, `rgba(${Math.floor(rgb.r * .45)},${Math.floor(rgb.g * .45)},${Math.floor(rgb.b * .45)},0.9)`);
-                bg.addColorStop(1, `rgba(${Math.floor(rgb.r * .15)},${Math.floor(rgb.g * .15)},${Math.floor(rgb.b * .15)},0.85)`);
+                // Orb body — matte finish, no harsh white center
+                const bg = ctx.createRadialGradient(ox - r * .2, oy - r * .22, r * .01, ox, oy, r);
+                bg.addColorStop(0, `rgba(${Math.min(rgb.r + 55, 255)},${Math.min(rgb.g + 55, 255)},${Math.min(rgb.b + 55, 255)},0.82)`);
+                bg.addColorStop(.45, `rgba(${rgb.r},${rgb.g},${rgb.b},0.88)`);
+                bg.addColorStop(.85, `rgba(${Math.floor(rgb.r * .45)},${Math.floor(rgb.g * .45)},${Math.floor(rgb.b * .45)},0.84)`);
+                bg.addColorStop(1, `rgba(${Math.floor(rgb.r * .18)},${Math.floor(rgb.g * .18)},${Math.floor(rgb.b * .18)},0.78)`);
                 ctx.fillStyle = bg; ctx.beginPath(); ctx.arc(ox, oy, r, 0, Math.PI * 2); ctx.fill();
-                ctx.fillStyle = 'rgba(255,255,255,0.55)'; ctx.beginPath(); ctx.arc(ox - r * .3, oy - r * .3, r * .22, 0, Math.PI * 2); ctx.fill();
+                // Tiny soft specular — barely there
+                ctx.fillStyle = 'rgba(255,255,255,0.10)'; ctx.beginPath(); ctx.arc(ox - r * .22, oy - r * .24, r * .13, 0, Math.PI * 2); ctx.fill();
             });
         }
 
@@ -958,21 +985,21 @@
 
         function explodeParticles(r, c, color) {
             const g = cellGeom(r, c);
-            for (let i = 0; i < 20; i++) {
-                const a = Math.random() * Math.PI * 2, sp = g.w * (1.6 + Math.random() * 3);
+            for (let i = 0; i < 12; i++) {
+                const a = Math.random() * Math.PI * 2, sp = g.w * (.9 + Math.random() * 1.8);
                 particles.push({
-                    x: g.x + (Math.random() - .5) * g.w * .4, y: g.y + (Math.random() - .5) * g.h * .4,
-                    vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, size: g.w * (.07 + Math.random() * .1), color, alpha: 1, life: .3 + Math.random() * .4, t: 0
+                    x: g.x + (Math.random() - .5) * g.w * .3, y: g.y + (Math.random() - .5) * g.h * .3,
+                    vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, size: g.w * (.05 + Math.random() * .07), color, alpha: 1, life: .25 + Math.random() * .3, t: 0
                 });
             }
             [[r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1]].forEach(([nr, nc]) => {
                 if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) return;
                 const ng = cellGeom(nr, nc), ang = Math.atan2(ng.y - g.y, ng.x - g.x);
-                for (let i = 0; i < 9; i++) {
-                    const sp2 = (Math.random() - .5) * .55, speed = g.w * (2.6 + Math.random() * 2.5);
+                for (let i = 0; i < 5; i++) {
+                    const sp2 = (Math.random() - .5) * .5, speed = g.w * (1.5 + Math.random() * 1.8);
                     particles.push({
                         x: g.x, y: g.y, vx: Math.cos(ang + sp2) * speed, vy: Math.sin(ang + sp2) * speed,
-                        size: g.w * (.08 + Math.random() * .09), color, alpha: 1, life: .18 + Math.random() * .2, t: 0
+                        size: g.w * (.06 + Math.random() * .07), color, alpha: .9, life: .15 + Math.random() * .18, t: 0
                     });
                 }
             });
@@ -1069,7 +1096,6 @@
             hudVib.title = vibEnabled ? 'Vibration ON' : 'Vibration OFF';
         }
 
-        // GitHub link — replace YOUR_USERNAME in the two places in the HTML above with your GitHub username
 
         // Buttons
         document.getElementById('btn-start').onclick = startGame;
@@ -1114,14 +1140,13 @@
         // ═══════════════════════════════════
         function sizeGrid() {
             const outer = document.querySelector('.grid-outer');
-            const availW = outer.clientWidth - 12;    // account for grid-wrap padding*2 + border
-            const availH = outer.clientHeight - 12;
-            const gapPx = 3, padPx = 5;
+            const availW = outer.clientWidth - 14;
+            const availH = outer.clientHeight - 14;
+            const gapPx = 4, padPx = 6;
 
             const cellByW = Math.floor((availW - padPx * 2 - gapPx * (cols - 1)) / cols);
             const cellByH = Math.floor((availH - padPx * 2 - gapPx * (rows - 1)) / rows);
-            // Fill the screen: use the dimension that's the binding constraint
-            const cellSz = Math.max(Math.min(cellByW, cellByH), 20);
+            const cellSz = Math.max(Math.min(cellByW, cellByH), 50); // minimum 50px
 
             const gridW = cellSz * cols + gapPx * (cols - 1) + padPx * 2;
             const gridH = cellSz * rows + gapPx * (rows - 1) + padPx * 2;
@@ -1285,11 +1310,11 @@
             gameActive = false;
             vibrate([30, 50, 80, 50, 200]);  // celebratory rumble
             const cx = canvas.width / 2, cy = canvas.height / 2;
-            for (let i = 0; i < 80; i++) {
-                const a = Math.random() * Math.PI * 2, sp = 70 + Math.random() * 230;
+            for (let i = 0; i < 45; i++) {
+                const a = Math.random() * Math.PI * 2, sp = 50 + Math.random() * 150;
                 particles.push({
                     x: cx, y: cy, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
-                    size: 3 + Math.random() * 9, color: player.color, alpha: 1, life: .7 + Math.random(), t: 0
+                    size: 3 + Math.random() * 7, color: player.color, alpha: .85, life: .6 + Math.random() * .9, t: 0
                 });
             }
             setTimeout(() => {
